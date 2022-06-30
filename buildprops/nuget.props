@@ -1,0 +1,20 @@
+<Project>
+  <!-- Nuget package properties when packed using dotnet pack. -->
+  <PropertyGroup>
+    <PackageVersion>$(NupkgVersion)</PackageVersion>
+    <Authors>cloudshipper.com</Authors>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/cloudshipper</PackageProjectUrl>
+    <PackageIcon></PackageIcon>
+    <PackageTags>CloudShipper DomainModel</PackageTags>
+    <RepositoryUrl>https://github.com/cloudshipper/domainmodel-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageOutputPath>$(RepoRoot)bin\$(Configuration)\nugets</PackageOutputPath>
+  </PropertyGroup>
+
+  <!-- Icon for nuget packages -->
+  <ItemGroup>
+    
+  </ItemGroup>
+</Project>

@@ -1,0 +1,8 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)..\buildprops\common.props" />
+  <Import Project="$(MSBuildThisFileDirectory)..\buildprops\nuget.props" />
+
+  <PropertyGroup>
+    <OutputPath>$(RepoRoot)bin\$(Configuration)\prod\$(MSBuildProjectName)\</OutputPath>
+  </PropertyGroup>
+</Project>
