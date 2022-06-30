@@ -9,5 +9,6 @@ namespace CloudShipper.DomainModel.Test.Domain
     internal class Constants
     {
         internal const string DomainObjectATypeId = "E136866C-5458-4300-B3B2-1FB990FB8AEB";
+        internal const string DomainObjectBTypeId = "724C41AF-7CBC-4CB8-A61E-55646151C7A8";
     }
 }
