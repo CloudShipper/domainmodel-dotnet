@@ -1,0 +1,15 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)..\buildprops\dotnetcore.props" />
+
+  <PropertyGroup>
+    <!-- Set Output Path for tests-->
+    <OutputPath>$(RepoRoot)bin\$(Configuration)\test\$(MSBuildProjectName)\</OutputPath>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Used to annotate PR with test failures: https://github.com/Tyrrrz/GitHubActionsTestLogger -->
+  <ItemGroup>
+    <PackageReference Include="GitHubActionsTestLogger" Version="1.1.2" />
+  </ItemGroup>
+</Project>

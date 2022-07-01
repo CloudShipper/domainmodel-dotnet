@@ -1,20 +1,25 @@
 <Project>
   <!-- Nuget package properties when packed using dotnet pack. -->
   <PropertyGroup>
-    <PackageVersion>$(NupkgVersion)</PackageVersion>
-    <Authors>cloudshipper.com</Authors>
+    <Authors>CloudShipper</Authors>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/cloudshipper</PackageProjectUrl>
-    <PackageIcon></PackageIcon>
-    <PackageTags>CloudShipper DomainModel</PackageTags>
+    <PackageProjectUrl>https://github.com/cloudshipper/domainmodel-dotnet</PackageProjectUrl>
+    <!-- <PackageIcon>xyz.png</PackageIcon> -->
+    <PackageTags>CloudShipper</PackageTags>
     <RepositoryUrl>https://github.com/cloudshipper/domainmodel-dotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageOutputPath>$(RepoRoot)bin\$(Configuration)\nugets</PackageOutputPath>
   </PropertyGroup>
 
   <!-- Icon for nuget packages -->
-  <ItemGroup>
-    
-  </ItemGroup>
+  <!-- <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\properties\xyz.png" Pack="true" Visible="false" PackagePath="images" />
+  </ItemGroup> -->
+
+  <!-- Enable symbols package generation. https://docs.microsoft.com/nuget/create-packages/symbol-packages-snupkg -->
+  <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
 </Project>

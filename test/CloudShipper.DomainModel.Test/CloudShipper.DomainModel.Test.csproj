@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CloudShipper.DomainModel\CloudShipper.DomainModel.csproj" />
+    <ProjectReference Include="..\..\src\CloudShipper.DomainModel\CloudShipper.DomainModel.csproj" />
   </ItemGroup>
 
 </Project>
