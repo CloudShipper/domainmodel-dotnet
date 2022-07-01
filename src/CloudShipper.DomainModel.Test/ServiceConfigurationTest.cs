@@ -28,6 +28,9 @@ public class ServiceConfigurationTest : IClassFixture<ServiceConfigurationTestFi
         var aB = factoryBConcrete.Create();
         Assert.NotNull(aB);
 
+        // it doesn't depend on which interface is queried, we expect that same instance is the result !!
+        Assert.Same(factoryB, factoryBConcrete);
+
         // AuditableAggregateRoot
         var auditableFactoryA = _fixture.ServiceProvider.GetRequiredService<IAuditableAggregateRootFactory<AuditableDomainObjectA, Guid, Guid>>();
         Assert.NotNull(auditableFactoryA);
@@ -40,5 +43,12 @@ public class ServiceConfigurationTest : IClassFixture<ServiceConfigurationTestFi
 
         var concretAuditBFactory = _fixture.ServiceProvider.GetRequiredService<IAuditableDomainObjectBFactory>();
         Assert.NotNull(concretAuditBFactory);
+
+        // it doesn't depend on which interface is queried, we expect that same instance is the result !!
+        Assert.Same(auditableFactoryB, concretAuditBFactory);
+
+        // AggregatRoot with no own factory implementation
+        var factorySimple = _fixture.ServiceProvider.GetRequiredService<IAggregateRootFactory<SimpleDomainObject, Guid>>();
+        Assert.NotNull(factorySimple);
     }
 }

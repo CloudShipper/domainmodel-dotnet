@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace CloudShipper.DomainModel.Aggregate;
 
-public abstract class AuditableAggregateRootFactory<TAggregateRoot, TId, TPrincipalId> 
+public class AuditableAggregateRootFactory<TAggregateRoot, TId, TPrincipalId> 
     : IAuditableAggregateRootFactory<TAggregateRoot, TId, TPrincipalId>
     where TAggregateRoot : class, IAuditableAggregateRoot<TId, TPrincipalId>
 {
