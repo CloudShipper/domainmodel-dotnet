@@ -2,8 +2,10 @@
 
 public abstract class AuditableEntity<TId, TPrincipalId> : Entity<TId>, IAuditable<TPrincipalId>
 {
-    protected AuditableEntity(TId id) : base(id)
+    protected AuditableEntity(TId id, TPrincipalId principalId) : base(id)
     {
+        CreatedBy = principalId;
+        CreatedAt = DateTimeOffset.UtcNow;
     }
 
     public DateTimeOffset? CreatedAt { get; protected set; }

@@ -13,6 +13,11 @@ internal static class AggregateTypeIdProvider
         return _typeTotypeIds[aggregate.GetType()];
     }
 
+    public static string Get(Type type)
+    {
+        return _typeTotypeIds[type];
+    }
+
     public static Type Get(string typeId)
     {
         return _typeIdToType[typeId];

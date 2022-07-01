@@ -2,5 +2,5 @@
 
 public interface IContext
 {
-    Task SaveChangesAsync(CancellationToken cancellation);
+    Task SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 }

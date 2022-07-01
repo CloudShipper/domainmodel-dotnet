@@ -2,6 +2,6 @@
 
 public interface ITransaction : IDisposable
 {
-    Task CommitAsync(CancellationToken cancellation);
+    Task CommitAsync(CancellationToken cancellationToken = default(CancellationToken));
     void Rollback();
 }

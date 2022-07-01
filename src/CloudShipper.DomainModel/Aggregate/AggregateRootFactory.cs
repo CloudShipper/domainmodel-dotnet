@@ -6,21 +6,20 @@ namespace CloudShipper.DomainModel.Aggregate;
 public abstract class AggregateRootFactory<TAggregate, TId> : IAggregateRootFactory<TAggregate, TId>
     where TAggregate : class, IAggregateRoot<TId>
 {
-    private static ConstructorInfo? _constructor = null;
     private static Func<TId, TAggregate>? _creator = null;
 
     static AggregateRootFactory()
     {
-        _constructor = typeof(TAggregate).GetConstructor(
+        var constructor = typeof(TAggregate).GetConstructor(
             BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
                                null, new[] { typeof(TId) }, null);
 
-        if (null == _constructor)
+        if (null == constructor)
             return;
 
         var parameter = Expression.Parameter(typeof(TId));
         var createExpression = Expression.Lambda<Func<TId, TAggregate>>(
-            Expression.New(_constructor, new Expression[] { parameter }), parameter);
+            Expression.New(constructor, new Expression[] { parameter }), parameter);
         _creator = createExpression.Compile();
     }
     

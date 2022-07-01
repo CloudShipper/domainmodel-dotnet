@@ -3,6 +3,6 @@
 public interface IUnitOfWork<TContext>
     where TContext : class, IContext
 {
-    Task<ITransaction> BeginTransactionAsync(CancellationToken cancellation);
+    Task SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
     TContext Context { get; }
 }

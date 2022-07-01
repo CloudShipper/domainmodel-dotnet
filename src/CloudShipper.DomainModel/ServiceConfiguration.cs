@@ -9,10 +9,15 @@ public static class ServiceConfiguration
         // 1. initalize AggregateTypeIdProvider
         AggregateTypeIdProvider.ReadAllTypes(domainTypes);
 
+        // 2. 
+
         // 2. Scan for all factories
         services.Scan(scan => scan
             .FromAssembliesOf(domainTypes)
                 .AddClasses(classes => classes.AssignableTo(typeof(IAggregateRootFactory<,>)))
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime()
+                .AddClasses(classes => classes.AssignableTo(typeof(IAuditableAggregateRootFactory<,,>)))
                     .AsImplementedInterfaces()
                     .WithScopedLifetime()
             );
