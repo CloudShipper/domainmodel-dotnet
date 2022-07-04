@@ -46,15 +46,31 @@ jobs:
       - name: Build
         run: dotnet build --configuration release /p:GITHUB_ACTIONS=false
       - name: Test
+        id: tests
+        continue-on-error: true
         run: |
           dotnet test \
             --configuration release \
             --framework net6.0 \
             --no-build \
             --no-restore \
+            --logger "trx;LogFilePrefix=net6.0" \
             --results-directory "${{ github.workspace }}/TestResults" \
             /p:CollectCoverage=true \
             /p:CoverletOutputFormat=opencover \
             /p:GITHUB_ACTIONS=false
-        
+      - name: Check test failure
+        if: github.event_name == 'pull_request' && steps.tests.outcome != 'success'
+        run: exit 1  
+      - name: Upload test coverage
+        uses: codecov/codecov-action@v1
+        with:
+          flags: net6.0
+      - name: Parse Trx files
+        uses: NasAmin/trx-parser@v0.2.0
+        id: trx-parser
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository # does not work on PRs from forks
+        with:
+          TRX_PATH: ${{ github.workspace }}/TestResults
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
