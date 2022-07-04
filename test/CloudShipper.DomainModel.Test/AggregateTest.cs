@@ -44,4 +44,32 @@ public class AggregateTest
         Assert.NotNull(obj.AuditableDomainEvents);
         Assert.Equal(0, obj.AuditableDomainEvents.Count);
     }
+
+    [Fact]
+    public void Test_003_AggregateRootEvent()
+    {
+        AggregateTypeIdProvider.ReadAllTypes(new[] { typeof(AuditableDomainObjectA) });
+
+        var obj = new DomainObjectA(Guid.NewGuid());
+        Assert.Throws<ArgumentNullException>(() => obj.AddNullTestEvent());
+
+        obj.AddTestEvent();
+        Assert.Equal(1, obj.DomainEvents.Count);
+        obj.ClearEvents();
+        Assert.Equal(0, obj.DomainEvents.Count);
+    }
+
+    [Fact]
+    public void Test_004_AuditableAggregateRootEvent()
+    {
+        AggregateTypeIdProvider.ReadAllTypes(new[] { typeof(AuditableDomainObjectA) });
+
+        var obj = new AuditableDomainObjectA(Guid.NewGuid(), Guid.NewGuid());
+        Assert.Throws<ArgumentNullException>(() => obj.AddNullTestEvent());
+
+        obj.AddTestEvent();
+        Assert.Equal(1, obj.AuditableDomainEvents.Count);
+        obj.ClearEvents();
+        Assert.Equal(0, obj.AuditableDomainEvents.Count);
+    }
 }

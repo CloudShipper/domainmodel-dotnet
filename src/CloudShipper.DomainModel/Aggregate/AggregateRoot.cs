@@ -24,6 +24,9 @@ public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateRoot<TId>
 
     protected void AddEvent(IDomainEvent<TId> @event)
     {
+        if (null == @event)
+            throw new ArgumentNullException(nameof(@event));
+
         _events.Enqueue(@event);
     }
 }

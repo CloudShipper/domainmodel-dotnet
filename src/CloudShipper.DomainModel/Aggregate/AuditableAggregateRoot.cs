@@ -23,6 +23,9 @@ public abstract class AuditableAggregateRoot<TId, TPrincipalId> : AuditableEntit
 
     protected void AddEvent(IAuditableDomainEvent<TId, TPrincipalId> @event)
     {
+        if (null == @event)
+            throw new ArgumentNullException(nameof(@event));
+
         _events.Enqueue(@event);
     }
 }
