@@ -2,4 +2,4 @@
 
 ## Domain Driven Design
 
-A dotnet sdk theat helps you to implement a Domain Model
+A dotnet sdk that helps you to implement a Domain Model

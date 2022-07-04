@@ -1,0 +1,59 @@
+name: Build SDK
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      NUGET_PACKAGES_FOLDER: bin/Release/nugets
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Build all
+        run: dotnet build --configuration release
+      - name: Generate packges
+        run: dotnet pack --configuration release
+      - name: Upload packages
+        uses: actions/upload-artifact@master
+        with:
+          name: packages
+          path: ${{ env.NUGET_PACKAGES_FOLDER }}
+
+  test:
+    name: Test
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Build
+        run: dotnet build --configuration release /p:GITHUB_ACTIONS=false
+      - name: Test
+        run: >
+          dotnet test
+            --configuration release
+            --framework net6
+            --no-build
+            --no-restore
+            --results-directory "${{ github.workspace }}/TestResults"
+            /p:CollectCoverage=true
+            /p:CoverletOutputFormat=opencover
+            /p:GITHUB_ACTIONS=false
+        
+      

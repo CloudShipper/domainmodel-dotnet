@@ -8,6 +8,27 @@
     <Company>CloudShipper</Company>
     <Authors>CloudShipper</Authors>
   </PropertyGroup>
+
+  <!-- Cls Compliant -->
+  <PropertyGroup>
+    <AssemblyClsCompliant>true</AssemblyClsCompliant>
+  </PropertyGroup>
+
+  <!-- set DebugType to full -->
+  <PropertyGroup>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <!-- Enable /highentropyva flag -->
+  <PropertyGroup>
+    <HighEntropyVA>true</HighEntropyVA>
+  </PropertyGroup>
+
+  <!-- Set AllowUnsafeBlocks to false -->
+  <PropertyGroup>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <!-- Use MinVer for assembly, nuget versioning based on git tags -->
   <ItemGroup>
     <PackageReference Include="MinVer" Version="4.1.0">
@@ -16,9 +37,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
   <!-- Configure properties for MinVer -->
   <PropertyGroup>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <MinVerDefaultPreReleasePhase>preview</MinVerDefaultPreReleasePhase>
   </PropertyGroup>
+
 </Project>
