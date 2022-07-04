@@ -31,4 +31,18 @@ public class AggregateRootFactoryTest
         Assert.Equal(Constants.AuditableDomainObjectATypeId, aggregate.TypeId);
         Assert.Equal(Guid.Parse(Constants.PrincipalIdA), aggregate.CreatedBy);
     }
+
+    [Fact]
+    public void Test_003_NoValidCtorAggregateRoot()
+    {
+        var factory = new AggregateRootFactory<NoValidCtorDomainObject, Guid>();
+        Assert.Throws<InvalidOperationException>(() => factory.Create(Guid.NewGuid()));
+    }
+
+    [Fact]
+    public void Test_004_NoValidCtorAuditableAggregateRoot()
+    {
+        var factory = new AuditableAggregateRootFactory<NoValidCtorAuditableDomainObject, Guid, Guid>();
+        Assert.Throws<InvalidOperationException>(() => factory.Create(Guid.NewGuid(), Guid.NewGuid()));
+    }
 }
