@@ -3,7 +3,7 @@ using CloudShipper.DomainModel.Test.Extensions;
 
 namespace CloudShipper.DomainModel.Test;
 
-[Collection("C_001")]
+[Collection("C_002")]
 [TestCaseOrderer(AlphabeticalTestCaseOrderer.TypeName, AlphabeticalTestCaseOrderer.AssemblyName)]
 public class AggregateTypeIdProviderTest
 {
