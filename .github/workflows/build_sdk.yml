@@ -46,15 +46,15 @@ jobs:
       - name: Build
         run: dotnet build --configuration release /p:GITHUB_ACTIONS=false
       - name: Test
-        run: >
-          dotnet test
-            --configuration release
-            --framework net6
-            --no-build
-            --no-restore
-            --results-directory "${{ github.workspace }}/TestResults"
-            /p:CollectCoverage=true
-            /p:CoverletOutputFormat=opencover
+        run: |
+          dotnet test \
+            --configuration release \
+            --framework net6 \
+            --no-build \
+            --no-restore \
+            --results-directory "${{ github.workspace }}/TestResults" \
+            /p:CollectCoverage=true \
+            /p:CoverletOutputFormat=opencover \
             /p:GITHUB_ACTIONS=false
         
       
