@@ -9,5 +9,7 @@ internal class Constants
 
     internal const string SimpleDomainObject = "3E4A93CF-2DBA-44E0-B426-BD2D003029D6";
 
+    internal const string SimpleAuditableDomainObject = "610ADE0A-F4FE-42A4-BCCA-901152FA0638";
+
     internal const string PrincipalIdA = "30AC5B1F-7A9E-4FEC-B904-67A7BEA7595E";        
 }

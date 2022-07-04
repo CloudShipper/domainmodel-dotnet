@@ -1,7 +1,10 @@
 ﻿using CloudShipper.DomainModel.Test.Domain;
+using CloudShipper.DomainModel.Test.Extensions;
 
 namespace CloudShipper.DomainModel.Test;
 
+[Collection("C_002")]
+[TestCaseOrderer(AlphabeticalTestCaseOrderer.TypeName, AlphabeticalTestCaseOrderer.AssemblyName)]
 public class AggregateRootFactoryTest
 {
     [Fact]
@@ -18,7 +21,7 @@ public class AggregateRootFactoryTest
     }
 
     [Fact]
-    public void Test_001_CreateAuditableInstanceWithId()
+    public void Test_002_CreateAuditableInstanceWithId()
     {
         AggregateTypeIdProvider.ReadAllTypes(new[] { typeof(AuditableDomainObjectA) });
 

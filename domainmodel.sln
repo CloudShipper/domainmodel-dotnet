@@ -11,6 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{B9B98A80-6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudShipper.DomainModel.Test", "test\CloudShipper.DomainModel.Test\CloudShipper.DomainModel.Test.csproj", "{826BF4AF-EA6A-41DA-85BB-FE003E89442A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "buildprops", "buildprops", "{3CB48201-548E-413F-9F8A-12E3DB2176F5}"
+	ProjectSection(SolutionItems) = preProject
+		buildprops\common.props = buildprops\common.props
+		buildprops\dotnetcore.props = buildprops\dotnetcore.props
+		buildprops\nuget.props = buildprops\nuget.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

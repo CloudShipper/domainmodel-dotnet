@@ -1,0 +1,2 @@
+﻿[assembly: CollectionBehavior(DisableTestParallelization = true)]
+[assembly: TestCollectionOrderer("CloudShipper.DomainModel.Test.Extensions.AlphabeticalCollectionOrderer", "CloudShipper.DomainModel.Test")]

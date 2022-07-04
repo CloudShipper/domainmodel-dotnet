@@ -1,8 +1,12 @@
-﻿using CloudShipper.DomainModel.Test.Domain;
+﻿using CloudShipper.DomainModel.Aggregate;
+using CloudShipper.DomainModel.Test.Domain;
+using CloudShipper.DomainModel.Test.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CloudShipper.DomainModel.Test;
 
+[Collection("C_003")]
+[TestCaseOrderer(AlphabeticalTestCaseOrderer.TypeName, AlphabeticalTestCaseOrderer.AssemblyName)]
 public class ServiceConfigurationTest : IClassFixture<ServiceConfigurationTestFixture>
 {
     private readonly ServiceConfigurationTestFixture _fixture;
@@ -13,7 +17,7 @@ public class ServiceConfigurationTest : IClassFixture<ServiceConfigurationTestFi
     }
 
     [Fact]
-    public void Test_001_Factories()
+    public void Test_001_AggregateRootFactories()
     {
         // AggregateRoot
         var factoryA = _fixture.ServiceProvider.GetRequiredService<IAggregateRootFactory<DomainObjectA, Guid>>();
@@ -29,8 +33,12 @@ public class ServiceConfigurationTest : IClassFixture<ServiceConfigurationTestFi
         Assert.NotNull(aB);
 
         // it doesn't depend on which interface is queried, we expect that same instance is the result !!
-        Assert.Same(factoryB, factoryBConcrete);
+        Assert.Same(factoryB, factoryBConcrete);                
+    }
 
+    [Fact]
+    public void Test_002_TestAuditableAggregateRootFactories()
+    {
         // AuditableAggregateRoot
         var auditableFactoryA = _fixture.ServiceProvider.GetRequiredService<IAuditableAggregateRootFactory<AuditableDomainObjectA, Guid, Guid>>();
         Assert.NotNull(auditableFactoryA);
@@ -46,9 +54,20 @@ public class ServiceConfigurationTest : IClassFixture<ServiceConfigurationTestFi
 
         // it doesn't depend on which interface is queried, we expect that same instance is the result !!
         Assert.Same(auditableFactoryB, concretAuditBFactory);
+    }
 
+    [Fact]
+    public void Test_003_AggregateRootWithNoFactoryImplementation()
+    {
         // AggregatRoot with no own factory implementation
         var factorySimple = _fixture.ServiceProvider.GetRequiredService<IAggregateRootFactory<SimpleDomainObject, Guid>>();
+        Assert.NotNull(factorySimple);
+    }
+
+    [Fact]
+    public void Test_004_AuditableAggregateRootWithNoFactoryImplementation()
+    {
+        var factorySimple = _fixture.ServiceProvider.GetRequiredService<IAuditableAggregateRootFactory<SimpleAuditableDomainObject, Guid, Guid>>();
         Assert.NotNull(factorySimple);
     }
 }
