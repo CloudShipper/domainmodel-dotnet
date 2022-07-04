@@ -16,6 +16,10 @@ public class AggregateTypeIdProviderTest
         var typeId = AggregateTypeIdProvider.Get(obj);
         Assert.NotNull(typeId);
         Assert.Equal(Constants.DomainObjectATypeId, typeId);
+        typeId = AggregateTypeIdProvider.Get(typeof(DomainObjectA));
+        Assert.NotNull(typeId);
+        Assert.Equal(Constants.DomainObjectATypeId, typeId);
+
         var type = AggregateTypeIdProvider.Get(typeId);
         Assert.NotNull(type);
         Assert.Equal(typeof(DomainObjectA), type);
@@ -24,6 +28,10 @@ public class AggregateTypeIdProviderTest
         typeId = AggregateTypeIdProvider.Get(auditableObj);
         Assert.NotNull(typeId);
         Assert.Equal(Constants.AuditableDomainObjectATypeId, typeId);
+        typeId = AggregateTypeIdProvider.Get(typeof(AuditableDomainObjectA));
+        Assert.NotNull(typeId);
+        Assert.Equal(Constants.AuditableDomainObjectATypeId, typeId);
+
         type = AggregateTypeIdProvider.Get(typeId);
         Assert.NotNull(type);
         Assert.Equal(typeof(AuditableDomainObjectA), type);
