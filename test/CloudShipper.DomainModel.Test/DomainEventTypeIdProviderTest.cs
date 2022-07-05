@@ -26,21 +26,29 @@ public class DomainEventTypeIdProviderTest
     }
 
     [Fact]
-    public void Test_002_NoDomainEvent()
+    public void Test_002_GetTypeByTypeId()
+    {
+        DomainEventTypeIdProvider.ReadAllTypes(new[] { typeof(DomainObjectA) });
+        var type = DomainEventTypeIdProvider.Get(Constants.DomainEventA);
+        Assert.Equal(typeof(DomainEventA), type);
+    }
+
+    [Fact]
+    public void Test_003_NoDomainEvent()
     {
         DomainEventTypeIdProvider.ReadAllTypes(new[] { typeof(DomainObjectA) });
         Assert.Throws<KeyNotFoundException>(() => DomainEventTypeIdProvider.Get(typeof(NoDomainEvent)));
     }
 
     [Fact]
-    public void Test_003_InvalidTypeId()
+    public void Test_004_InvalidTypeId()
     {
         DomainEventTypeIdProvider.ReadAllTypes(new[] { typeof(DomainObjectA) });
         Assert.Throws<KeyNotFoundException>(() => DomainEventTypeIdProvider.Get(String.Empty));
     }
 
     [Fact]
-    public void Test_004_NoDomainEventAttribute()
+    public void Test_005_NoDomainEventAttribute()
     {
         DomainEventTypeIdProvider.ReadAllTypes(new[] { typeof(DomainObjectA) });
         Assert.Throws<KeyNotFoundException>(() => new NoDomainEventAttribute(Guid.NewGuid(),
@@ -49,7 +57,7 @@ public class DomainEventTypeIdProviderTest
     }
 
     [Fact]
-    public void Test_005_DomainEventIsNull()
+    public void Test_006_DomainEventIsNull()
     {
         DomainEventTypeIdProvider.ReadAllTypes(new[] { typeof(DomainObjectA) });
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
