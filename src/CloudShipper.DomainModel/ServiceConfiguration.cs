@@ -1,4 +1,5 @@
 ﻿using CloudShipper.DomainModel.Aggregate;
+using CloudShipper.DomainModel.Events;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -9,12 +10,15 @@ public static class ServiceConfiguration
         // 1. initalize AggregateTypeIdProvider
         AggregateTypeIdProvider.ReadAllTypes(domainTypes);
 
-        // 2. add generic aggregate factories
+        // 2. initialize DomainEventTypeIdProvider
+        DomainEventTypeIdProvider.ReadAllTypes(domainTypes);
+
+        // 3. add generic aggregate factories
         services
             .AddScoped(typeof(IAggregateRootFactory<,>), typeof(AggregateRootFactory<,>))
             .AddScoped(typeof(IAuditableAggregateRootFactory<,,>), typeof(AuditableAggregateRootFactory<,,>));
 
-        // 2. Scan for all factories
+        // 4. Scan for all factories
         services.Scan(scan => scan
             .FromAssembliesOf(domainTypes)
                 .AddClasses(classes => classes.AssignableTo(typeof(IAggregateRootFactory<,>)))
