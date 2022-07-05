@@ -29,7 +29,7 @@ public class DomainEventTypeIdProviderTest
 
         typeId = DomainEventTypeIdProvider.Get(aEvt);
         Assert.NotNull(typeId);
-        Assert.Equal(Constants.DomainEventA, typeId);
+        Assert.Equal(Constants.AuditableDomainEventA, typeId);
     }
 
     [Fact]
