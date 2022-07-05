@@ -15,13 +15,20 @@ public class DomainEventTypeIdProviderTest
         DomainEventTypeIdProvider.ReadAllTypes(new[] { typeof(DomainObjectA) });
 
         var obj = new DomainObjectA(Guid.NewGuid());
-        var evt = new DomainEventA(Guid.NewGuid(), obj.GetType().Name, obj.TypeId);
+        var evt = new DomainEventA(obj.Id, obj.GetType().Name, obj.TypeId);
 
         var typeId = DomainEventTypeIdProvider.Get(evt);
         Assert.NotNull(typeId);
         Assert.Equal(Constants.DomainEventA, typeId);
 
         typeId = DomainEventTypeIdProvider.Get(evt.GetType());
+        Assert.Equal(Constants.DomainEventA, typeId);
+
+        var aObj = new AuditableDomainObjectA(Guid.NewGuid(), Guid.Parse(Constants.PrincipalIdA));
+        var aEvt = new AuditableDomainEventA(aObj.Id, aObj.GetType().Name, aObj.TypeId, Guid.Parse(Constants.PrincipalIdA));
+
+        typeId = DomainEventTypeIdProvider.Get(aEvt);
+        Assert.NotNull(typeId);
         Assert.Equal(Constants.DomainEventA, typeId);
     }
 

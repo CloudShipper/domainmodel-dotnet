@@ -17,4 +17,6 @@ internal class Constants
 
     internal const string DomainEventA = "CA9A2C9A-ACF1-425F-9E63-8DA9E418D862";
     internal const string NoDomainEvent = "E364CDE8-8117-48D4-8ED1-1194ADBD20CE";
+
+    internal const string AuditableDomainEventA = "C5C8D410-FC49-4093-B03B-894F723CF80E";
 }
