@@ -13,5 +13,8 @@ internal class Constants
 
     internal const string NoDomainObject = "A2BFA1D6-6991-4D84-B5A4-92D4C5467166";
 
-    internal const string PrincipalIdA = "30AC5B1F-7A9E-4FEC-B904-67A7BEA7595E";        
+    internal const string PrincipalIdA = "30AC5B1F-7A9E-4FEC-B904-67A7BEA7595E";
+
+    internal const string DomainEventA = "CA9A2C9A-ACF1-425F-9E63-8DA9E418D862";
+    internal const string NoDomainEvent = "E364CDE8-8117-48D4-8ED1-1194ADBD20CE";
 }

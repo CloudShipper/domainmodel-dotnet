@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CloudShipper.DomainModel.Test;
 
-[Collection("C_004")]
+[Collection("C_005")]
 [TestCaseOrderer(AlphabeticalTestCaseOrderer.TypeName, AlphabeticalTestCaseOrderer.AssemblyName)]
 public class ServiceConfigurationTest : IClassFixture<ServiceConfigurationTestFixture>
 {
