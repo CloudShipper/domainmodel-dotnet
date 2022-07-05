@@ -2,5 +2,5 @@
 
 public interface ITransactionable
 {
-    Task<ITransaction> BeginTransactionAsync();
+    Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
 }

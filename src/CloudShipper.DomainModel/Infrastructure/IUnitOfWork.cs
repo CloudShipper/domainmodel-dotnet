@@ -1,8 +1,8 @@
 ﻿namespace CloudShipper.DomainModel.Infrastructure;
 
 public interface IUnitOfWork<TContext>
-    where TContext : class, IContext
+    where TContext : class
 {
-    Task SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
     TContext Context { get; }
 }

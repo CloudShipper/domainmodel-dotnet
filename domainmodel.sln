@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "buildprops", "buildprops", 
 		buildprops\nuget.props = buildprops\nuget.props
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudShipper.DomainModel.EntityFrameworkCore", "src\CloudShipper.DomainModel.EntityFrameworkCore\CloudShipper.DomainModel.EntityFrameworkCore.csproj", "{F3150CD1-70BA-4A01-85B2-C8EBD793D41D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{826BF4AF-EA6A-41DA-85BB-FE003E89442A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{826BF4AF-EA6A-41DA-85BB-FE003E89442A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{826BF4AF-EA6A-41DA-85BB-FE003E89442A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3150CD1-70BA-4A01-85B2-C8EBD793D41D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3150CD1-70BA-4A01-85B2-C8EBD793D41D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3150CD1-70BA-4A01-85B2-C8EBD793D41D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3150CD1-70BA-4A01-85B2-C8EBD793D41D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{5F38B05C-218A-4607-8AD7-CFCB95AB05E5} = {694C91C2-B959-4BC4-8CBC-199B0558C4DA}
 		{826BF4AF-EA6A-41DA-85BB-FE003E89442A} = {B9B98A80-6BFC-4627-A5BF-DD2A7E2493AB}
+		{F3150CD1-70BA-4A01-85B2-C8EBD793D41D} = {694C91C2-B959-4BC4-8CBC-199B0558C4DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {25B14BDA-EFE7-434F-8C09-DF80D4596B2D}
