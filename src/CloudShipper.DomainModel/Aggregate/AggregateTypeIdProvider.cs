@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using CloudShipper.DomainModel.Entity;
+using System.Reflection;
 
 namespace CloudShipper.DomainModel.Aggregate;
 
@@ -10,17 +11,29 @@ internal static class AggregateTypeIdProvider
 
     public static string Get(IAggregate aggregate)
     {
-        return _typeTotypeIds[aggregate.GetType()];
+        if (null == aggregate)
+            throw new ArgumentNullException(nameof(aggregate));
+
+        if (!_typeTotypeIds.TryGetValue(aggregate.GetType(), out string? result))
+            throw new KeyNotFoundException($"No type id found for {aggregate.GetType().FullName}");
+
+        return result;
     }
 
     public static string Get(Type type)
     {
-        return _typeTotypeIds[type];
+        if (!_typeTotypeIds.TryGetValue(type, out string? result))
+            throw new KeyNotFoundException($"No type id found for type {type.FullName}");
+
+        return result;
     }
 
     public static Type Get(string typeId)
     {
-        return _typeIdToType[typeId];
+        if (!_typeIdToType.TryGetValue(typeId, out Type? result))
+            throw new KeyNotFoundException($"No tpye found for type id {typeId}");
+
+        return result;
     }
 
     public static void ReadAllTypes(IEnumerable<Type> types) 
@@ -33,12 +46,17 @@ internal static class AggregateTypeIdProvider
 
         foreach (var type in types)
         {
-            var aggregates = System.Reflection.Assembly.GetAssembly(type)?.GetTypes().Where(t => t.GetCustomAttribute<AggregateAttribute>() != null).ToList();
+            var aggregates = Assembly.GetAssembly(type)?.GetTypes()
+                .Where(t => t.GetCustomAttribute<AggregateAttribute>() != null)
+                .ToList();
             if (null == aggregates)
                 continue;
 
             foreach (var a in aggregates)
             {
+                if (!a.IsAssignableTo(typeof(IAggregate)))
+                    continue;
+
                 var attr = a.GetCustomAttribute<AggregateAttribute>();
                 if (null == attr)
                     continue;

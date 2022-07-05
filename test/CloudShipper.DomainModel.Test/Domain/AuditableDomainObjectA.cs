@@ -14,6 +14,8 @@ internal class AuditableDomainObjectA : AuditableAggregateRoot<Guid, Guid>
 
     public void AddNullTestEvent()
     {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         base.AddEvent(null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 }

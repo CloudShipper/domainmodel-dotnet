@@ -11,5 +11,7 @@ internal class Constants
 
     internal const string SimpleAuditableDomainObject = "610ADE0A-F4FE-42A4-BCCA-901152FA0638";
 
+    internal const string NoDomainObject = "A2BFA1D6-6991-4D84-B5A4-92D4C5467166";
+
     internal const string PrincipalIdA = "30AC5B1F-7A9E-4FEC-B904-67A7BEA7595E";        
 }
