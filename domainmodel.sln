@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudShipper.DomainModel", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{B9B98A80-6BFC-4627-A5BF-DD2A7E2493AB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudShipper.DomainModel.Test", "test\CloudShipper.DomainModel.Test\CloudShipper.DomainModel.Test.csproj", "{826BF4AF-EA6A-41DA-85BB-FE003E89442A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "buildprops", "buildprops", "{3CB48201-548E-413F-9F8A-12E3DB2176F5}"
 	ProjectSection(SolutionItems) = preProject
 		buildprops\common.props = buildprops\common.props
@@ -19,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "buildprops", "buildprops", 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudShipper.DomainModel.EntityFrameworkCore", "src\CloudShipper.DomainModel.EntityFrameworkCore\CloudShipper.DomainModel.EntityFrameworkCore.csproj", "{F3150CD1-70BA-4A01-85B2-C8EBD793D41D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudShipper.DomainModel.Test", "test\CloudShipper.DomainModel.Test\CloudShipper.DomainModel.Test.csproj", "{A440B930-26CD-4046-B027-5212EAC2A2FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudShipper.DomainModel.EntityFrameworkCore.Test", "test\CloudShipper.DomainModel.EntityFrameworkCore.Test\CloudShipper.DomainModel.EntityFrameworkCore.Test.csproj", "{0466225A-4E7E-4592-9CF0-4DFCB075FE1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,22 +32,27 @@ Global
 		{5F38B05C-218A-4607-8AD7-CFCB95AB05E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F38B05C-218A-4607-8AD7-CFCB95AB05E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F38B05C-218A-4607-8AD7-CFCB95AB05E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{826BF4AF-EA6A-41DA-85BB-FE003E89442A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{826BF4AF-EA6A-41DA-85BB-FE003E89442A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{826BF4AF-EA6A-41DA-85BB-FE003E89442A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{826BF4AF-EA6A-41DA-85BB-FE003E89442A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F3150CD1-70BA-4A01-85B2-C8EBD793D41D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F3150CD1-70BA-4A01-85B2-C8EBD793D41D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3150CD1-70BA-4A01-85B2-C8EBD793D41D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3150CD1-70BA-4A01-85B2-C8EBD793D41D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A440B930-26CD-4046-B027-5212EAC2A2FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A440B930-26CD-4046-B027-5212EAC2A2FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A440B930-26CD-4046-B027-5212EAC2A2FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A440B930-26CD-4046-B027-5212EAC2A2FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0466225A-4E7E-4592-9CF0-4DFCB075FE1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0466225A-4E7E-4592-9CF0-4DFCB075FE1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0466225A-4E7E-4592-9CF0-4DFCB075FE1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0466225A-4E7E-4592-9CF0-4DFCB075FE1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5F38B05C-218A-4607-8AD7-CFCB95AB05E5} = {694C91C2-B959-4BC4-8CBC-199B0558C4DA}
-		{826BF4AF-EA6A-41DA-85BB-FE003E89442A} = {B9B98A80-6BFC-4627-A5BF-DD2A7E2493AB}
 		{F3150CD1-70BA-4A01-85B2-C8EBD793D41D} = {694C91C2-B959-4BC4-8CBC-199B0558C4DA}
+		{A440B930-26CD-4046-B027-5212EAC2A2FB} = {B9B98A80-6BFC-4627-A5BF-DD2A7E2493AB}
+		{0466225A-4E7E-4592-9CF0-4DFCB075FE1A} = {B9B98A80-6BFC-4627-A5BF-DD2A7E2493AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {25B14BDA-EFE7-434F-8C09-DF80D4596B2D}

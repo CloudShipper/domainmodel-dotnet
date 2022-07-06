@@ -4,7 +4,7 @@ namespace CloudShipper.DomainModel.Test.Domain;
 
 internal class NoValidCtorDomainObject : IAggregateRoot<Guid>
 {
-    public IReadOnlyCollection<IDomainEvent<Guid>> DomainEvents => throw new NotImplementedException();
+    public IReadOnlyCollection<IDomainEvent> DomainEvents => throw new NotImplementedException();
 
     public string TypeId => throw new NotImplementedException();
 

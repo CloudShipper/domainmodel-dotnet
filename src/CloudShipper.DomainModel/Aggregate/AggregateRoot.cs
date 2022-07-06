@@ -13,7 +13,7 @@ public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateRoot<TId>
         TypeId = AggregateTypeIdProvider.Get(this);
     }
 
-    public IReadOnlyCollection<IDomainEvent<TId>> DomainEvents => _events.ToImmutableArray();
+    public IReadOnlyCollection<IDomainEvent> DomainEvents => _events.ToImmutableArray();
 
     public string TypeId { get; private set; }
 

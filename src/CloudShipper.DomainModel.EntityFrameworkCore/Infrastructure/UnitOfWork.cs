@@ -1,4 +1,6 @@
-﻿using CloudShipper.DomainModel.Infrastructure;
+﻿using CloudShipper.DomainModel.Aggregate;
+using CloudShipper.DomainModel.Events;
+using CloudShipper.DomainModel.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -8,12 +10,14 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable
     where TContext : DbContext
 {
     private readonly TContext _context;
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
     private IDbContextTransaction? _transaction;
 
-    public UnitOfWork(TContext context)
+    public UnitOfWork(TContext context, IDomainEventDispatcher domainEventDispatcher)
     {
         _context = context;
         _transaction = null;
+        _domainEventDispatcher = domainEventDispatcher;
     }
 
     public TContext Context => _context;
@@ -31,7 +35,23 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        // todo: dispatch Domain Events
+        // collect Aggregates which has events stored
+        var aggregates = _context.ChangeTracker
+            .Entries()
+            .Cast<IAggregate>()
+            .Where(e => e.DomainEvents != null && e.DomainEvents.Any())
+            .ToList();
+
+        var events = aggregates
+            .SelectMany(a => a.DomainEvents)
+            .ToList();
+
+        // clear all events
+        aggregates.ForEach(a => a.ClearEvents());
+
+        // publish all events
+        foreach (var e in events)
+            await _domainEventDispatcher.Publish(e);
 
         // save changes
         await Context.SaveChangesAsync(cancellationToken);

@@ -12,7 +12,7 @@ public abstract class AuditableAggregateRoot<TId, TPrincipalId> : AuditableEntit
         TypeId = AggregateTypeIdProvider.Get(this);
     }
 
-    public IReadOnlyCollection<IAuditableDomainEvent<TId, TPrincipalId>> AuditableDomainEvents => _events.ToImmutableArray();
+    public IReadOnlyCollection<IDomainEvent> DomainEvents => _events.ToImmutableArray();
 
     public string TypeId { get; private set; }
 

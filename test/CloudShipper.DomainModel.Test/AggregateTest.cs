@@ -41,8 +41,8 @@ public class AggregateTest
         Assert.Null(obj.ModifiedAt);
         Assert.Equal(Guid.Empty, obj.DeletedBy);
         Assert.Null(obj.DeletedAt);
-        Assert.NotNull(obj.AuditableDomainEvents);
-        Assert.Equal(0, obj.AuditableDomainEvents.Count);
+        Assert.NotNull(obj.DomainEvents);
+        Assert.Equal(0, obj.DomainEvents.Count);
     }
 
     [Fact]
@@ -68,8 +68,8 @@ public class AggregateTest
         Assert.Throws<ArgumentNullException>(() => obj.AddNullTestEvent());
 
         obj.AddTestEvent();
-        Assert.Equal(1, obj.AuditableDomainEvents.Count);
+        Assert.Equal(1, obj.DomainEvents.Count);
         obj.ClearEvents();
-        Assert.Equal(0, obj.AuditableDomainEvents.Count);
+        Assert.Equal(0, obj.DomainEvents.Count);
     }
 }

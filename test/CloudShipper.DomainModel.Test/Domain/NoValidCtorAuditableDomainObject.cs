@@ -4,7 +4,7 @@ namespace CloudShipper.DomainModel.Test.Domain;
 
 internal class NoValidCtorAuditableDomainObject : IAuditableAggregateRoot<Guid, Guid>
 {
-    public IReadOnlyCollection<IAuditableDomainEvent<Guid, Guid>> AuditableDomainEvents => throw new NotImplementedException();
+    public IReadOnlyCollection<IDomainEvent> DomainEvents => throw new NotImplementedException();
 
     public string TypeId => throw new NotImplementedException();
 
