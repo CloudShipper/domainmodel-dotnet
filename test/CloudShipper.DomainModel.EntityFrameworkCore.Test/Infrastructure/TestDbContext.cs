@@ -1,5 +1,6 @@
 ﻿using CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace CloudShipper.DomainModel.EntityFrameworkCore.Test.Infrastructure;
 
@@ -8,6 +9,7 @@ internal class TestDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseInMemoryDatabase("testingdbcontext");
+        optionsBuilder.ConfigureWarnings(builder => builder.Ignore(InMemoryEventId.TransactionIgnoredWarning));
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

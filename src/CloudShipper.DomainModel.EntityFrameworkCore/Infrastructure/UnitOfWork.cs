@@ -37,8 +37,8 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable, ITr
     {
         // collect Aggregates which has events stored
         var aggregates = _context.ChangeTracker
-            .Entries()
-            .Cast<IAggregate>()
+            .Entries<IAggregate>()
+            .Select(e => e.Entity)
             .Where(e => e.DomainEvents != null && e.DomainEvents.Any())
             .ToList();
 
@@ -85,7 +85,6 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable, ITr
             _transaction?.Dispose();
             _transaction = null;
         }
-        
     }
 
     void ITransactionHandler.RollbackTransaction(Transaction transaction)

@@ -5,7 +5,7 @@ using Moq;
 
 namespace CloudShipper.DomainModel.EntityFrameworkCore.Test;
 
-[Collection("C_001")]
+[Collection("C_002")]
 [TestCaseOrderer(AlphabeticalTestCaseOrderer.TypeName, AlphabeticalTestCaseOrderer.AssemblyName)]
 public class TransactionTest
 {

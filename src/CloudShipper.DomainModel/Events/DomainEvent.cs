@@ -1,4 +1,6 @@
-﻿namespace CloudShipper.DomainModel.Events;
+﻿using CloudShipper.DomainModel.Aggregate;
+
+namespace CloudShipper.DomainModel.Events;
 
 public abstract class DomainEvent<TAggregateId> : IDomainEvent<TAggregateId>
 {
@@ -7,6 +9,14 @@ public abstract class DomainEvent<TAggregateId> : IDomainEvent<TAggregateId>
         AggregateId = aggregateId;
         AggregateType = aggregateType;
         AggregateTypeId = aggregateTypeId;
+        EventTypeId = DomainEventTypeIdProvider.Get(this);
+    }
+
+    protected DomainEvent(TAggregateId aggregateId, Type aggregateType)
+    {
+        AggregateId = aggregateId;
+        AggregateType = aggregateType.Name;
+        AggregateTypeId = AggregateTypeIdProvider.Get(aggregateType);
         EventTypeId = DomainEventTypeIdProvider.Get(this);
     }
     public TAggregateId AggregateId { get; private set; }

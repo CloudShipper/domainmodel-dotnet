@@ -1,4 +1,5 @@
 ﻿using CloudShipper.DomainModel.Aggregate;
+using CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain.Events.DomainObjectA;
 
 namespace CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain;
 
@@ -7,7 +8,14 @@ internal class DomainObjectA : AggregateRoot<Guid>
 {
     public DomainObjectA(Guid id) : base(id)
     {
+        AddEvent(new CreatedEvent(Id, GetType()));
     }
 
-    public int Value1 { get; set; } = 1;
+    public int Value1 { get; internal set; } = 1;
+
+    public void SetValue1(int value)
+    {
+        Value1 = value;
+        AddEvent(new Value1ChangedEvent(Id, GetType()) { Value1 = value });
+    }
 }
