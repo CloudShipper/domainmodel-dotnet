@@ -5,6 +5,8 @@ using CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain.Events.DomainObje
 using CloudShipper.DomainModel.EntityFrameworkCore.Test.Extensions;
 using CloudShipper.DomainModel.EntityFrameworkCore.Test.Infrastructure;
 using CloudShipper.DomainModel.Events;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Moq;
 
 namespace CloudShipper.DomainModel.EntityFrameworkCore.Test;
@@ -65,5 +67,31 @@ public class UnitOfWorkTest
         dispatcher.Verify(x => x.Publish(It.IsAny<IDomainEvent>()), Times.Exactly(2));
         dispatcher.Verify(x => x.Publish(It.IsAny<CreatedEvent>()), Times.Once());
         dispatcher.Verify(x => x.Publish(It.IsAny<Value1ChangedEvent>()), Times.Once());
+    }
+
+    [Fact]
+    public void Test_003_TestNestedTransactions()
+    {
+        var context = new Mock<TestDbContext>();
+        var tx = new Mock<IDbContextTransaction>();
+        var dbFacade = new Mock<DatabaseFacade>(context.Object);
+        var dispatcher = new Mock<IDomainEventDispatcher>();
+        var unitOfWork = new UnitOfWork<TestDbContext>(context.Object, dispatcher.Object);
+
+        context.Setup(x => x.Database).Returns(dbFacade.Object);
+        dbFacade.Setup(x => x.BeginTransactionAsync(default)).Returns(Task.FromResult(tx.Object));
+
+        tx.Setup(x => x.CommitAsync(default)).Returns(Task.CompletedTask);
+
+        var innerTx = unitOfWork.BeginTransactionAsync().Result;
+        var outerTx = unitOfWork.BeginTransactionAsync().Result;
+
+        context.Verify(x => x.Database.BeginTransactionAsync(default), Times.Once);
+
+        outerTx.CommitAsync().GetAwaiter().GetResult();
+        tx.Verify(x => x.CommitAsync(default), Times.Never);
+
+        innerTx.CommitAsync().GetAwaiter().GetResult();
+        tx.Verify(x => x.CommitAsync(default), Times.Once);
     }
 }
