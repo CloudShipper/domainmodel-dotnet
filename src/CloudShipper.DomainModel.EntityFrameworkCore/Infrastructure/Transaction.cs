@@ -4,16 +4,15 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure
 {
-    internal class Transaction<TContext> : ITransaction
-        where TContext : DbContext
+    internal class Transaction : ITransaction
     {
         private IDbContextTransaction? _dbContextTransaction;
-        private readonly UnitOfWork<TContext> _unitOfWork;
+        private readonly ITransactionHandler _transactionHandler;
 
-        public Transaction(IDbContextTransaction? dbContextTransaction, UnitOfWork<TContext> unitOfWork)
+        public Transaction(IDbContextTransaction? dbContextTransaction, ITransactionHandler transactionHandler)
         {
             _dbContextTransaction = dbContextTransaction;
-            _unitOfWork = unitOfWork;
+            _transactionHandler = transactionHandler;
         }
 
         internal IDbContextTransaction? DbContextTransaction => _dbContextTransaction;
@@ -22,7 +21,7 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure
         {
             try
             {
-                await _unitOfWork.CommitTransactionAsync(this, cancellationToken);
+                await _transactionHandler.CommitTransactionAsync(this, cancellationToken);
             }            
             finally 
             {
@@ -42,13 +41,12 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure
         {
             try
             {
-                _unitOfWork.RollbackTransaction(this);
+                _transactionHandler.RollbackTransaction(this);
             }
             finally 
             {
                 _dbContextTransaction = null;
-            }
-            
+            }            
         }
     }
 }

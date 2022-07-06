@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure;
 
-public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable
+public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable, ITransactionHandler
     where TContext : DbContext
 {
     private readonly TContext _context;
@@ -27,10 +27,10 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable
         if (null == _transaction)
         {
             _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
-            return new Transaction<TContext>(_transaction, this);
+            return new Transaction(_transaction, this);
         }
 
-        return new Transaction<TContext>(null, this);
+        return new Transaction(null, this);
     }
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -57,7 +57,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable
         await Context.SaveChangesAsync(cancellationToken);
     }
 
-    internal async Task CommitTransactionAsync(Transaction<TContext> transaction, CancellationToken cancellation = default)
+    async Task ITransactionHandler.CommitTransactionAsync(Transaction transaction, CancellationToken cancellation)
     {
         if (null == transaction)
             throw new ArgumentNullException(nameof(transaction));
@@ -77,7 +77,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable
         }
         catch
         {
-            RollbackTransaction(transaction);
+            ((ITransactionHandler)this).RollbackTransaction(transaction);
             throw;
         }
         finally 
@@ -88,7 +88,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable
         
     }
 
-    internal void RollbackTransaction(Transaction<TContext> transaction)
+    void ITransactionHandler.RollbackTransaction(Transaction transaction)
     {
         if (null == transaction)
             throw new ArgumentNullException();
