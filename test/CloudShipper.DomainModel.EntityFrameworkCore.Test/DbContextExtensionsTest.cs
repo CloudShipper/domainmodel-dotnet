@@ -2,6 +2,7 @@ using CloudShipper.DomainModel.Aggregate;
 using CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain;
 using CloudShipper.DomainModel.EntityFrameworkCore.Test.Extensions;
 using CloudShipper.DomainModel.EntityFrameworkCore.Test.Infrastructure;
+using CloudShipper.DomainModel.Events;
 
 namespace CloudShipper.DomainModel.EntityFrameworkCore.Test;
 
@@ -15,6 +16,7 @@ public class DbContextExtensionsTest
         var id = Guid.NewGuid();
 
         AggregateTypeIdProvider.ReadAllTypes(new[] { typeof(DomainObjectA) });
+        DomainEventTypeIdProvider.ReadAllTypes(new[] { typeof(DomainObjectA) });
 
         using (var context = new TestDbContext())
         {
