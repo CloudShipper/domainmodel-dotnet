@@ -1,5 +1,4 @@
-﻿using CloudShipper.DomainModel.Aggregate;
-using CloudShipper.DomainModel.Test.Domain;
+﻿using CloudShipper.DomainModel.Test.Domain;
 using CloudShipper.DomainModel.Test.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
