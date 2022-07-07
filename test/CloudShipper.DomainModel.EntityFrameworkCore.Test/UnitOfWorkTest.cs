@@ -205,4 +205,57 @@ public class UnitOfWorkTest
         tx.Verify(x => x.Rollback(), Times.Once);
         context.Verify(x => x.SaveChangesAsync(default), Times.Never);
     }
+
+    [Fact]
+    public void Test_009_RollbackNestedTransaction()
+    {
+        var context = new Mock<TestDbContext>();
+        var tx = new Mock<IDbContextTransaction>();
+        var dbFacade = new Mock<DatabaseFacade>(context.Object);
+        var dispatcher = new Mock<IDomainEventDispatcher>();
+        var unitOfWork = new UnitOfWork<TestDbContext>(context.Object, dispatcher.Object);
+
+        context.Setup(x => x.Database).Returns(dbFacade.Object);
+        dbFacade.Setup(x => x.BeginTransactionAsync(default)).Returns(Task.FromResult(tx.Object));
+
+        tx.Setup(x => x.Rollback());
+
+        var innerTx = unitOfWork.BeginTransactionAsync().Result;
+        var outerTx = unitOfWork.BeginTransactionAsync().Result;
+
+        context.Verify(x => x.Database.BeginTransactionAsync(default), Times.Once);
+
+        outerTx.Rollback();
+        tx.Verify(x => x.Rollback(), Times.Never);
+
+        innerTx.Rollback();
+        tx.Verify(x => x.Rollback(), Times.Once);
+    }
+
+    [Fact]
+    public void Test_010_RollbackWithWrongContext()
+    {
+        var context = new Mock<TestDbContext>();
+        var anotherContext = new Mock<TestDbContext>();
+        var tx = new Mock<IDbContextTransaction>();
+        var anotherTx = new Mock<IDbContextTransaction>();
+        var dbFacade = new Mock<DatabaseFacade>(context.Object);
+        var anotherDbFacade = new Mock<DatabaseFacade>(anotherContext.Object);
+        var dispatcher = new Mock<IDomainEventDispatcher>();
+        var unitOfWork = new UnitOfWork<TestDbContext>(context.Object, dispatcher.Object);
+        var anotherUnitOfWork = new UnitOfWork<TestDbContext>(anotherContext.Object, dispatcher.Object);
+
+        context.Setup(x => x.Database).Returns(dbFacade.Object);
+        anotherContext.Setup(x => x.Database).Returns(anotherDbFacade.Object);
+        dbFacade.Setup(x => x.BeginTransactionAsync(default)).Returns(Task.FromResult(tx.Object));
+        anotherDbFacade.Setup(x => x.BeginTransactionAsync(default)).Returns(Task.FromResult(anotherTx.Object));
+
+        tx.Setup(x => x.Rollback());
+        anotherTx.Setup(x => x.Rollback());
+
+        var contextTx = unitOfWork.BeginTransactionAsync(default).Result;
+        var anotherContextTx = anotherUnitOfWork.BeginTransactionAsync(default).Result;
+
+        Assert.Throws<InvalidOperationException>(() => ((ITransactionHandler)unitOfWork).RollbackTransaction((Transaction)anotherContextTx));        
+    }
 }
