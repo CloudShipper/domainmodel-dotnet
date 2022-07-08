@@ -50,13 +50,28 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Test
         }
 
         [Fact]
-        public void Test_003_ScopedLifetime()
+        public void Test_003_GetAuditableAggregateRootRepository()
+        {
+            var unitOfWork = _fixture.ServiceProvider.GetRequiredService<IUnitOfWork<TestDbContext>>();
+            Assert.NotNull(unitOfWork);
+
+            var repo = _fixture.ServiceProvider.GetRequiredService<IAuditableAggregateRootRepository<AuditableDomainObjectA, Guid, Guid>>();
+            Assert.NotNull(repo);
+
+            Assert.Same(unitOfWork, ((AuditableAggregateRootRepository<TestDbContext, AuditableDomainObjectA, Guid, Guid>)repo).UnitOfWork);
+        }
+
+        [Fact]
+        public void Test_004_ScopedLifetime()
         {
             var defaultUnitOfWork = _fixture.ServiceProvider.GetRequiredService<IUnitOfWork<TestDbContext>>();
             Assert.NotNull(defaultUnitOfWork);
 
             var defaultRepo = _fixture.ServiceProvider.GetRequiredService<IAggregateRootRepository<DomainObjectA, Guid>>();
             Assert.NotNull(defaultRepo);
+
+            var defaultAuditableRepo = _fixture.ServiceProvider.GetRequiredService<IAuditableAggregateRootRepository<AuditableDomainObjectA, Guid, Guid>>();
+            Assert.NotNull(defaultAuditableRepo);
 
             using (var scope = _fixture.ServiceProvider.CreateScope())
             {
@@ -68,7 +83,11 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Test
                 var repo = scope.ServiceProvider.GetRequiredService<IAggregateRootRepository<DomainObjectA, Guid>>();
                 Assert.NotNull(repo);
 
+                var auditableRepo = scope.ServiceProvider.GetRequiredService<IAuditableAggregateRootRepository<AuditableDomainObjectA, Guid, Guid>>();
+                Assert.NotNull(auditableRepo);
+
                 Assert.NotSame(defaultRepo, repo);
+                Assert.NotSame(defaultAuditableRepo, auditableRepo);
             }
         }
     }

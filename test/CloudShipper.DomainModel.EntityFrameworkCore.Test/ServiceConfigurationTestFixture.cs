@@ -21,9 +21,10 @@ public class ServiceConfigurationTestFixture : IDisposable
             .AddDbContext<TestDbContext>()
             .AddDomain(new[] { typeof(DomainObjectA) })
             .AddSingleton(dispatcher.Object)
-            .AddUnitOfWork<TestDbContext>(binder => binder
+            .AddRepositories<TestDbContext>(binder => binder
                 .Bind<DomainObjectA, Guid>()
-                .Bind<DomainObjectB, Guid>())
+                .Bind<DomainObjectB, Guid>()
+                .Bind<AuditableDomainObjectA, Guid, Guid>())
             .AddEfCoreInfrastructure(new[] { typeof(DomainObjectA)});
 
         ServiceProvider = services.BuildServiceProvider();

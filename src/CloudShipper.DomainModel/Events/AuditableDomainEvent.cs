@@ -10,6 +10,13 @@
             Timestamp = DateTimeOffset.UtcNow;
         }
 
+        protected AuditableDomainEvent(TAggregateId aggregateId, Type aggregateType, TPrincipalId principalid)
+            : base(aggregateId, aggregateType)
+        {
+            RaisedBy = principalid;
+            Timestamp = DateTimeOffset.UtcNow;
+        }
+
         public TPrincipalId RaisedBy { get; private set; }
 
         public DateTimeOffset Timestamp { get; private set; }

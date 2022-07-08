@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceConfiguration
 {
-    public static IServiceCollection AddUnitOfWork<TDbContext>(this IServiceCollection services, Action<IDbContextAggregateBinder<TDbContext>> binder)
+    public static IServiceCollection AddRepositories<TDbContext>(this IServiceCollection services, Action<IDbContextAggregateBinder<TDbContext>> binder)
         where TDbContext : DbContext
     {
         // Add UnitOfWork
@@ -22,6 +22,14 @@ public static class ServiceConfiguration
         {
             var repoType = typeof(IAggregateRootRepository<,>).MakeGenericType(b.AggregateType, b.AggregateIdType);
             var repoImplType = typeof(AggregateRootRepository<,,>).MakeGenericType(b.DbContextType, b.AggregateType, b.AggregateIdType);
+
+            services.AddScoped(repoType, repoImplType);
+        }
+
+        foreach (var b in contextBinder.AuditableAggregateRootBindings)
+        {
+            var repoType = typeof(IAuditableAggregateRootRepository<,,>).MakeGenericType(b.AggregateType, b.AggregateIdType, b.PrincipalIdType);
+            var repoImplType = typeof(AuditableAggregateRootRepository<,,,>).MakeGenericType(b.DbContextType, b.AggregateType, b.AggregateIdType, b.PrincipalIdType);
 
             services.AddScoped(repoType, repoImplType);
         }

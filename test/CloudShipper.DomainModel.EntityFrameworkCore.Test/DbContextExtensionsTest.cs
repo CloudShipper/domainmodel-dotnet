@@ -45,14 +45,15 @@ public class DbContextExtensionsTest
         var id = Guid.NewGuid();
         var principalId = Guid.NewGuid();
 
-        AggregateTypeIdProvider.ReadAllTypes(new[] { typeof(DomainObjectA) });
+        AggregateTypeIdProvider.ReadAllTypes(new[] { typeof(AuditableDomainObjectA) });
+        DomainEventTypeIdProvider.ReadAllTypes(new[] { typeof(AuditableDomainObjectA) });
 
         using (var context = new TestDbContext())
         {
             context.Database.EnsureCreated();
 
             var obj = new AuditableDomainObjectA(id, principalId);
-            obj.Value1 = 20;
+            obj.SetValue1(20, principalId);
             var dbSet = context.Set<AuditableDomainObjectA>();
             dbSet.Add(obj);
 
@@ -67,6 +68,8 @@ public class DbContextExtensionsTest
             Assert.Equal(principalId, result?.CreatedBy);
             Assert.NotNull(result?.CreatedAt);
             Assert.Equal(20, result?.Value1);
+            Assert.Equal(principalId, result?.ModifiedBy);
+            Assert.NotNull(result?.ModifiedAt);
         }
     }
 }
