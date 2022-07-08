@@ -75,7 +75,7 @@ public class RepositoryTests : IClassFixture<ServiceConfigurationTestFixture>
 
         Assert.ThrowsAsync<KeyNotFoundException>(() => repo.GetAsync(id));
 
-        Assert.ThrowsAsync<KeyNotFoundException>(() => repo.GetAsync(Guid.NewGuid()));
+        Assert.ThrowsAsync<KeyNotFoundException>(() => repo.DeleteAsync(id));
     }
 
     [Fact]
@@ -211,6 +211,8 @@ public class RepositoryTests : IClassFixture<ServiceConfigurationTestFixture>
         Assert.Equal(aggregate, result);
 
         Assert.ThrowsAsync<KeyNotFoundException>(() => repo.GetAsync(id));
+
+        Assert.ThrowsAsync<KeyNotFoundException>(() => repo.DeleteAsync(id));
     }
 
     [Fact]
