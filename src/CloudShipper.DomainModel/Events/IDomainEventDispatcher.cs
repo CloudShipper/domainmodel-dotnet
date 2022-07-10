@@ -2,5 +2,5 @@
 
 public interface IDomainEventDispatcher
 {
-    Task Publish(IDomainEvent @event);
+    Task Publish(IDomainEvent @event, CancellationToken cancellationToken = default);
 }

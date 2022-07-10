@@ -90,5 +90,23 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Test
                 Assert.NotSame(defaultAuditableRepo, auditableRepo);
             }
         }
+
+        [Fact]
+        public void Test_005_GetCustomRepository()
+        {
+            var customRepo = _fixture.ServiceProvider.GetRequiredService<IDomainObjectCRepository>();
+            Assert.NotNull(customRepo);
+
+            var repo = _fixture.ServiceProvider.GetRequiredService<IAggregateRootRepository<DomainObjectC, Guid>>();
+            Assert.NotNull(repo);
+
+            Assert.Same(customRepo, repo);
+
+            var unitOfWork = _fixture.ServiceProvider.GetRequiredService<IUnitOfWork<TestDbContext>>();
+            Assert.NotNull(unitOfWork);
+
+            Assert.Same(unitOfWork, ((AggregateRootRepository<TestDbContext, DomainObjectC, Guid>)customRepo).UnitOfWork);
+            Assert.Same(unitOfWork, ((AggregateRootRepository<TestDbContext, DomainObjectC, Guid>)repo).UnitOfWork);
+        }
     }
 }

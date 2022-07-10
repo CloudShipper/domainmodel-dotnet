@@ -24,8 +24,8 @@ public class UnitOfWorkTest
         // Setup
         var context = new TestDbContext();
         var dispatcher = new Mock<IDomainEventDispatcher>();
-        dispatcher.Setup(x => x.Publish(It.IsAny<CreatedEvent>())).Returns(Task.CompletedTask);
-        dispatcher.Setup(x => x.Publish(It.IsAny<Value1ChangedEvent>())).Returns(Task.CompletedTask);
+        dispatcher.Setup(x => x.Publish(It.IsAny<CreatedEvent>(), default)).Returns(Task.CompletedTask);
+        dispatcher.Setup(x => x.Publish(It.IsAny<Value1ChangedEvent>(), default)).Returns(Task.CompletedTask);
         var unitOfWork = new UnitOfWork<TestDbContext>(context, dispatcher.Object);
         var dbSet = unitOfWork.Context.Set<DomainObjectA>();
 
@@ -35,9 +35,9 @@ public class UnitOfWorkTest
 
         unitOfWork.SaveChangesAsync().GetAwaiter().GetResult();
 
-        dispatcher.Verify(x => x.Publish(It.IsAny<IDomainEvent>()), Times.Exactly(2));
-        dispatcher.Verify(x => x.Publish(It.IsAny<CreatedEvent>()), Times.Once());
-        dispatcher.Verify(x => x.Publish(It.IsAny<Value1ChangedEvent>()), Times.Once());
+        dispatcher.Verify(x => x.Publish(It.IsAny<IDomainEvent>(), default), Times.Exactly(2));
+        dispatcher.Verify(x => x.Publish(It.IsAny<CreatedEvent>(), default), Times.Once());
+        dispatcher.Verify(x => x.Publish(It.IsAny<Value1ChangedEvent>(), default), Times.Once());
     }
 
     [Fact]
@@ -49,8 +49,8 @@ public class UnitOfWorkTest
         // Setup
         var context = new TestDbContext();
         var dispatcher = new Mock<IDomainEventDispatcher>();
-        dispatcher.Setup(x => x.Publish(It.IsAny<CreatedEvent>())).Returns(Task.CompletedTask);
-        dispatcher.Setup(x => x.Publish(It.IsAny<Value1ChangedEvent>())).Returns(Task.CompletedTask);
+        dispatcher.Setup(x => x.Publish(It.IsAny<CreatedEvent>(), default)).Returns(Task.CompletedTask);
+        dispatcher.Setup(x => x.Publish(It.IsAny<Value1ChangedEvent>(), default)).Returns(Task.CompletedTask);
         var unitOfWork = new UnitOfWork<TestDbContext>(context, dispatcher.Object);
         var dbSet = unitOfWork.Context.Set<DomainObjectA>();
 
@@ -64,9 +64,9 @@ public class UnitOfWorkTest
 
         transaction.CommitAsync().GetAwaiter().GetResult();
 
-        dispatcher.Verify(x => x.Publish(It.IsAny<IDomainEvent>()), Times.Exactly(2));
-        dispatcher.Verify(x => x.Publish(It.IsAny<CreatedEvent>()), Times.Once());
-        dispatcher.Verify(x => x.Publish(It.IsAny<Value1ChangedEvent>()), Times.Once());
+        dispatcher.Verify(x => x.Publish(It.IsAny<IDomainEvent>(), default), Times.Exactly(2));
+        dispatcher.Verify(x => x.Publish(It.IsAny<CreatedEvent>(), default), Times.Once());
+        dispatcher.Verify(x => x.Publish(It.IsAny<Value1ChangedEvent>(), default), Times.Once());
     }
 
     [Fact]

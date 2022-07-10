@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudShipper.DomainModel.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudShipper.DomainModel.EntityFrameworkCore.Test", "test\CloudShipper.DomainModel.EntityFrameworkCore.Test\CloudShipper.DomainModel.EntityFrameworkCore.Test.csproj", "{0466225A-4E7E-4592-9CF0-4DFCB075FE1A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudShipper.DomainModel.MediatR", "src\CloudShipper.DomainModel.MediatR\CloudShipper.DomainModel.MediatR.csproj", "{0966A92F-D226-45BE-8BF9-3EE533E81597}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{0466225A-4E7E-4592-9CF0-4DFCB075FE1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0466225A-4E7E-4592-9CF0-4DFCB075FE1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0466225A-4E7E-4592-9CF0-4DFCB075FE1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0966A92F-D226-45BE-8BF9-3EE533E81597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0966A92F-D226-45BE-8BF9-3EE533E81597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0966A92F-D226-45BE-8BF9-3EE533E81597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0966A92F-D226-45BE-8BF9-3EE533E81597}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 		{F3150CD1-70BA-4A01-85B2-C8EBD793D41D} = {694C91C2-B959-4BC4-8CBC-199B0558C4DA}
 		{A440B930-26CD-4046-B027-5212EAC2A2FB} = {B9B98A80-6BFC-4627-A5BF-DD2A7E2493AB}
 		{0466225A-4E7E-4592-9CF0-4DFCB075FE1A} = {B9B98A80-6BFC-4627-A5BF-DD2A7E2493AB}
+		{0966A92F-D226-45BE-8BF9-3EE533E81597} = {694C91C2-B959-4BC4-8CBC-199B0558C4DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {25B14BDA-EFE7-434F-8C09-DF80D4596B2D}
