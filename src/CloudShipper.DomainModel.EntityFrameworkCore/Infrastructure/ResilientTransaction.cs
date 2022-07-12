@@ -25,16 +25,24 @@ internal class ResilientTransaction : IResilientTransaction
         {
             using var tx = await _context.BeginTransactionAsync(cancellationToken);
 
-            try
-            {
-                await action();
-                await tx.CommitAsync();
-            }
-            catch (Exception)
-            {
-                tx.Rollback();
-                throw;
-            }
+            await action();
+            await tx.CommitAsync();            
+        });
+    }
+
+    public async Task ExecuteAsync(Func<ITransaction, Task> action, CancellationToken cancellationToken = default)
+    {
+        //Use of an EF Core resiliency strategy when using multiple DbContexts within an explicit BeginTransaction():
+        //See: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency
+
+        var strategy = _dbContext.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var tx = await _context.BeginTransactionAsync(cancellationToken);
+
+            await action(tx);
+            await tx.CommitAsync();            
         });
     }
 }
