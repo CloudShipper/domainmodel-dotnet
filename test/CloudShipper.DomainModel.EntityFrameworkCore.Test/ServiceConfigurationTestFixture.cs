@@ -1,6 +1,7 @@
 ﻿using CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain;
 using CloudShipper.DomainModel.EntityFrameworkCore.Test.Infrastructure;
 using CloudShipper.DomainModel.Events;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
@@ -10,6 +11,8 @@ public class ServiceConfigurationTestFixture : IDisposable
 {
     public ServiceProvider ServiceProvider { get; set; }
     public Mock<IDomainEventDispatcher> DomainEventDispatcherMock { get; set; }
+
+    private TestDbContext _context;
 
     public ServiceConfigurationTestFixture()
     {
@@ -28,10 +31,14 @@ public class ServiceConfigurationTestFixture : IDisposable
             .AddEfCoreInfrastructure(new[] { typeof(DomainObjectA)});
 
         ServiceProvider = services.BuildServiceProvider();
+        _context = ServiceProvider.GetRequiredService<TestDbContext>();
+        _context.Database.OpenConnection();
+        _context.Database.EnsureCreated();
     }
 
     public void Dispose()
     {
+        _context.Database.CloseConnection();
         ServiceProvider.Dispose();
     }
 }

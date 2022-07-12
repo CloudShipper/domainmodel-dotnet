@@ -13,73 +13,68 @@ public class TransactionTest
     public void Test_001_Commit()
     {       
         var dbTransaction = new Mock<IDbContextTransaction>();
-        var handler = new Mock<ITransactionHandler>();
-        var transaction = new Transaction(dbTransaction.Object, handler.Object);
+        var transaction = new Transaction(dbTransaction.Object);
 
-        handler.Setup(x => x.CommitTransactionAsync(transaction, default)).Returns(Task.CompletedTask);
-        handler.Setup(x => x.RollbackTransaction(transaction));
+        dbTransaction.Setup(x => x.CommitAsync(default)).Returns(Task.CompletedTask);
+        dbTransaction.Setup(x => x.Rollback());
 
         transaction.CommitAsync().GetAwaiter().GetResult();
-        handler.Verify(x => x.CommitTransactionAsync(transaction, default), Times.Once());
+        dbTransaction.Verify(x => x.CommitAsync(default), Times.Once());
 
         transaction.Dispose();
-        handler.Verify(x => x.RollbackTransaction(transaction), Times.Never);
+        dbTransaction.Verify(x => x.Rollback(), Times.Never);
     }
 
     [Fact]
     public void Test_002_CommitThatThrowsException()
     {
         var dbTransaction = new Mock<IDbContextTransaction>();
-        var handler = new Mock<ITransactionHandler>();
-        var transaction = new Transaction(dbTransaction.Object, handler.Object);
+        var transaction = new Transaction(dbTransaction.Object);
 
-        handler.Setup(x => x.CommitTransactionAsync(transaction, default)).Throws<Exception>();
-        handler.Setup(x => x.RollbackTransaction(transaction));
+        dbTransaction.Setup(x => x.CommitAsync(default)).Throws<Exception>();
+        dbTransaction.Setup(x => x.Rollback());
 
         Assert.Throws<Exception>(() => transaction.CommitAsync().GetAwaiter().GetResult());
-        handler.Verify(x => x.CommitTransactionAsync(transaction, default), Times.Once());
+        dbTransaction.Verify(x => x.CommitAsync(default), Times.Once());
 
         transaction.Dispose();
-        handler.Verify(x => x.RollbackTransaction(transaction), Times.Never);
+        dbTransaction.Verify(x => x.Rollback(), Times.Once);
     }
 
     [Fact]
     public void Test_003_Rollback()
     {
         var dbTransaction = new Mock<IDbContextTransaction>();
-        var handler = new Mock<ITransactionHandler>();
-        var transaction = new Transaction(dbTransaction.Object, handler.Object);
-        handler.Setup(x => x.RollbackTransaction(transaction));
+        var transaction = new Transaction(dbTransaction.Object);
+        dbTransaction.Setup(x => x.Rollback());
 
         transaction.Rollback();
         transaction.Dispose();
 
-        handler.Verify(x => x.RollbackTransaction(transaction), Times.Once);
+        dbTransaction.Verify(x => x.Rollback(), Times.Once);
     }
 
     [Fact]
     public void Test_004_RollbackThatThrowsException()
     {
         var dbTransaction = new Mock<IDbContextTransaction>();
-        var handler = new Mock<ITransactionHandler>();
-        var transaction = new Transaction(dbTransaction.Object, handler.Object);
-        handler.Setup(x => x.RollbackTransaction(transaction)).Throws<Exception>();
+        var transaction = new Transaction(dbTransaction.Object);
+        dbTransaction.Setup(x => x.Rollback()).Throws<Exception>();
 
         Assert.Throws<Exception>(() => transaction.Rollback());
         transaction.Dispose();
 
-        handler.Verify(x => x.RollbackTransaction(transaction), Times.Once);
+        dbTransaction.Verify(x => x.Rollback(), Times.Once);
     }
 
     [Fact]
     public void Test_005_Dispose()
     {
         var dbTransaction = new Mock<IDbContextTransaction>();
-        var handler = new Mock<ITransactionHandler>();
-        var transaction = new Transaction(dbTransaction.Object, handler.Object);
-        handler.Setup(x => x.RollbackTransaction(transaction));
+        var transaction = new Transaction(dbTransaction.Object);
+        dbTransaction.Setup(x => x.Rollback());
 
         transaction.Dispose();
-        handler.Verify(x => x.RollbackTransaction(transaction), Times.Once);
+        dbTransaction.Verify(x => x.Rollback(), Times.Once);
     }
 }

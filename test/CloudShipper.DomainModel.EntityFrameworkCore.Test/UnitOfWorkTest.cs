@@ -5,6 +5,7 @@ using CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain.Events.DomainObje
 using CloudShipper.DomainModel.EntityFrameworkCore.Test.Extensions;
 using CloudShipper.DomainModel.EntityFrameworkCore.Test.Infrastructure;
 using CloudShipper.DomainModel.Events;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Moq;
@@ -29,6 +30,9 @@ public class UnitOfWorkTest
         var unitOfWork = new UnitOfWork<TestDbContext>(context, dispatcher.Object);
         var dbSet = unitOfWork.Context.Set<DomainObjectA>();
 
+        context.Database.OpenConnection();
+        var x = context.Database.EnsureCreated();
+
         var aggregate = new DomainObjectA(Guid.NewGuid());
         aggregate.SetValue1(20);
         dbSet.Add(aggregate);
@@ -38,6 +42,8 @@ public class UnitOfWorkTest
         dispatcher.Verify(x => x.Publish(It.IsAny<IDomainEvent>(), default), Times.Exactly(2));
         dispatcher.Verify(x => x.Publish(It.IsAny<CreatedEvent>(), default), Times.Once());
         dispatcher.Verify(x => x.Publish(It.IsAny<Value1ChangedEvent>(), default), Times.Once());
+
+        context.Database.CloseConnection();
     }
 
     [Fact]
@@ -52,10 +58,15 @@ public class UnitOfWorkTest
         dispatcher.Setup(x => x.Publish(It.IsAny<CreatedEvent>(), default)).Returns(Task.CompletedTask);
         dispatcher.Setup(x => x.Publish(It.IsAny<Value1ChangedEvent>(), default)).Returns(Task.CompletedTask);
         var unitOfWork = new UnitOfWork<TestDbContext>(context, dispatcher.Object);
+
+        context.Database.OpenConnection();
+        var x = context.Database.EnsureCreated();
+
         var dbSet = unitOfWork.Context.Set<DomainObjectA>();
 
         var transaction = unitOfWork.BeginTransactionAsync().Result;
         Assert.NotNull(transaction);
+        Assert.True(unitOfWork.HasActiveTransaction());
 
         var aggregate = new DomainObjectA(Guid.NewGuid());
         aggregate.SetValue1(20);
@@ -67,75 +78,12 @@ public class UnitOfWorkTest
         dispatcher.Verify(x => x.Publish(It.IsAny<IDomainEvent>(), default), Times.Exactly(2));
         dispatcher.Verify(x => x.Publish(It.IsAny<CreatedEvent>(), default), Times.Once());
         dispatcher.Verify(x => x.Publish(It.IsAny<Value1ChangedEvent>(), default), Times.Once());
+
+        context.Database.CloseConnection();
     }
 
     [Fact]
-    public void Test_003_TestNestedTransactions()
-    {
-        var context = new Mock<TestDbContext>();
-        var tx = new Mock<IDbContextTransaction>();
-        var dbFacade = new Mock<DatabaseFacade>(context.Object);
-        var dispatcher = new Mock<IDomainEventDispatcher>();
-        var unitOfWork = new UnitOfWork<TestDbContext>(context.Object, dispatcher.Object);
-
-        context.Setup(x => x.Database).Returns(dbFacade.Object);
-        dbFacade.Setup(x => x.BeginTransactionAsync(default)).Returns(Task.FromResult(tx.Object));
-
-        tx.Setup(x => x.CommitAsync(default)).Returns(Task.CompletedTask);
-
-        var innerTx = unitOfWork.BeginTransactionAsync().Result;
-        var outerTx = unitOfWork.BeginTransactionAsync().Result;
-
-        context.Verify(x => x.Database.BeginTransactionAsync(default), Times.Once);
-
-        outerTx.CommitAsync().GetAwaiter().GetResult();
-        tx.Verify(x => x.CommitAsync(default), Times.Never);
-
-        innerTx.CommitAsync().GetAwaiter().GetResult();
-        tx.Verify(x => x.CommitAsync(default), Times.Once);
-    }
-
-    [Fact]
-    public void Test_004_TestCommitNullTransaction()
-    {
-        var context = new Mock<TestDbContext>();
-        var dispatcher = new Mock<IDomainEventDispatcher>();
-        var unitOfWork = new UnitOfWork<TestDbContext>(context.Object, dispatcher.Object);
-
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        Assert.ThrowsAsync<ArgumentNullException>(() => ((ITransactionHandler)unitOfWork).CommitTransactionAsync(null, default));
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-    }
-
-    [Fact]
-    public void Test_005_WrongTransactionContext()
-    {
-        var context = new Mock<TestDbContext>();
-        var anotherContext = new Mock<TestDbContext>();
-        var tx = new Mock<IDbContextTransaction>();
-        var anotherTx = new Mock<IDbContextTransaction>();
-        var dbFacade = new Mock<DatabaseFacade>(context.Object);
-        var anotherDbFacade = new Mock<DatabaseFacade>(anotherContext.Object);
-        var dispatcher = new Mock<IDomainEventDispatcher>();
-        var unitOfWork = new UnitOfWork<TestDbContext>(context.Object, dispatcher.Object);
-        var anotherUnitOfWork = new UnitOfWork<TestDbContext>(anotherContext.Object, dispatcher.Object);
-
-        context.Setup(x => x.Database).Returns(dbFacade.Object);
-        anotherContext.Setup(x => x.Database).Returns(anotherDbFacade.Object);
-        dbFacade.Setup(x => x.BeginTransactionAsync(default)).Returns(Task.FromResult(tx.Object));
-        anotherDbFacade.Setup(x => x.BeginTransactionAsync(default)).Returns(Task.FromResult(anotherTx.Object));
-
-        tx.Setup(x => x.CommitAsync(default)).Returns(Task.CompletedTask);
-        anotherTx.Setup(x => x.CommitAsync(default)).Returns(Task.CompletedTask);
-
-        var contextTx = unitOfWork.BeginTransactionAsync(default).Result;
-        var anotherContextTx = anotherUnitOfWork.BeginTransactionAsync(default).Result;
-
-        Assert.ThrowsAsync<InvalidOperationException>(() => ((ITransactionHandler)unitOfWork).CommitTransactionAsync((Transaction)anotherContextTx, default));
-    }
-
-    [Fact]
-    public void Test_006_CommitTransactionThrowsException()
+    public void Test_003_CommitTransactionThrowsException()
     {
         var context = new Mock<TestDbContext>();
         var tx = new Mock<IDbContextTransaction>();
@@ -155,29 +103,15 @@ public class UnitOfWorkTest
         Assert.ThrowsAsync<Exception>(() => contextTx.CommitAsync(default));
 
         tx.Verify(x => x.Rollback(), Times.Once);
-        context.Verify(x => x.SaveChangesAsync(default), Times.Once);
-
+        
         // now test a commit again
         Assert.ThrowsAsync<InvalidOperationException>(() => contextTx.CommitAsync(default));
 
         tx.Verify(x => x.Rollback(), Times.Once);
-        context.Verify(x => x.SaveChangesAsync(default), Times.Once);
     }
 
     [Fact]
-    public void Test_007_RollbackNullTransaction()
-    {
-        var context = new Mock<TestDbContext>();
-        var dispatcher = new Mock<IDomainEventDispatcher>();
-        var unitOfWork = new UnitOfWork<TestDbContext>(context.Object, dispatcher.Object);
-
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        Assert.Throws<ArgumentNullException>(() => ((ITransactionHandler)unitOfWork).RollbackTransaction(null));
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-    }
-
-    [Fact]
-    public void Test_008_RollbackTransactionThrowsException()
+    public void Test_004_RollbackTransactionThrowsException()
     {
         var context = new Mock<TestDbContext>();
         var tx = new Mock<IDbContextTransaction>();
@@ -204,58 +138,5 @@ public class UnitOfWorkTest
 
         tx.Verify(x => x.Rollback(), Times.Once);
         context.Verify(x => x.SaveChangesAsync(default), Times.Never);
-    }
-
-    [Fact]
-    public void Test_009_RollbackNestedTransaction()
-    {
-        var context = new Mock<TestDbContext>();
-        var tx = new Mock<IDbContextTransaction>();
-        var dbFacade = new Mock<DatabaseFacade>(context.Object);
-        var dispatcher = new Mock<IDomainEventDispatcher>();
-        var unitOfWork = new UnitOfWork<TestDbContext>(context.Object, dispatcher.Object);
-
-        context.Setup(x => x.Database).Returns(dbFacade.Object);
-        dbFacade.Setup(x => x.BeginTransactionAsync(default)).Returns(Task.FromResult(tx.Object));
-
-        tx.Setup(x => x.Rollback());
-
-        var innerTx = unitOfWork.BeginTransactionAsync().Result;
-        var outerTx = unitOfWork.BeginTransactionAsync().Result;
-
-        context.Verify(x => x.Database.BeginTransactionAsync(default), Times.Once);
-
-        outerTx.Rollback();
-        tx.Verify(x => x.Rollback(), Times.Never);
-
-        innerTx.Rollback();
-        tx.Verify(x => x.Rollback(), Times.Once);
-    }
-
-    [Fact]
-    public void Test_010_RollbackWithWrongContext()
-    {
-        var context = new Mock<TestDbContext>();
-        var anotherContext = new Mock<TestDbContext>();
-        var tx = new Mock<IDbContextTransaction>();
-        var anotherTx = new Mock<IDbContextTransaction>();
-        var dbFacade = new Mock<DatabaseFacade>(context.Object);
-        var anotherDbFacade = new Mock<DatabaseFacade>(anotherContext.Object);
-        var dispatcher = new Mock<IDomainEventDispatcher>();
-        var unitOfWork = new UnitOfWork<TestDbContext>(context.Object, dispatcher.Object);
-        var anotherUnitOfWork = new UnitOfWork<TestDbContext>(anotherContext.Object, dispatcher.Object);
-
-        context.Setup(x => x.Database).Returns(dbFacade.Object);
-        anotherContext.Setup(x => x.Database).Returns(anotherDbFacade.Object);
-        dbFacade.Setup(x => x.BeginTransactionAsync(default)).Returns(Task.FromResult(tx.Object));
-        anotherDbFacade.Setup(x => x.BeginTransactionAsync(default)).Returns(Task.FromResult(anotherTx.Object));
-
-        tx.Setup(x => x.Rollback());
-        anotherTx.Setup(x => x.Rollback());
-
-        var contextTx = unitOfWork.BeginTransactionAsync(default).Result;
-        var anotherContextTx = anotherUnitOfWork.BeginTransactionAsync(default).Result;
-
-        Assert.Throws<InvalidOperationException>(() => ((ITransactionHandler)unitOfWork).RollbackTransaction((Transaction)anotherContextTx));        
     }
 }

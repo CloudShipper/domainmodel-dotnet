@@ -1,23 +1,22 @@
 ﻿using CloudShipper.DomainModel.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure
 {
     internal class Transaction : ITransaction
     {
-        private IDbContextTransaction? _dbContextTransaction;
-        private readonly ITransactionHandler _transactionHandler;
+        private IDbContextTransaction _dbContextTransaction;        
         private bool _committed = false;
         private bool _rolledback = false;
 
-        public Transaction(IDbContextTransaction? dbContextTransaction, ITransactionHandler transactionHandler)
+        public Transaction(IDbContextTransaction dbContextTransaction)
         {
             _dbContextTransaction = dbContextTransaction;
-            _transactionHandler = transactionHandler;
         }
 
-        internal IDbContextTransaction? DbContextTransaction => _dbContextTransaction;
+        internal IDbContextTransaction DbContextTransaction => _dbContextTransaction;
+
+        public Guid TransactionId => _dbContextTransaction.TransactionId;
 
         public async Task CommitAsync(CancellationToken cancellationToken = default)
         {
@@ -26,18 +25,23 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure
 
             try
             {
-                await _transactionHandler.CommitTransactionAsync(this, cancellationToken);
+                await _dbContextTransaction.CommitAsync(cancellationToken);
             }            
+            catch (Exception)
+            {
+                _dbContextTransaction.Rollback();
+                throw;
+            }
             finally 
             {
                 _committed = true;
-                _dbContextTransaction = null;
+                _dbContextTransaction.Dispose();
             }
         }
 
         public void Dispose()
         {
-            if (null == _dbContextTransaction)
+            if (_committed || _rolledback)
                 return;
 
             Rollback();
@@ -50,12 +54,12 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure
 
             try
             {
-                _transactionHandler.RollbackTransaction(this);
-            }
+                _dbContextTransaction.Rollback();
+            }            
             finally 
             {
                 _rolledback = true;
-                _dbContextTransaction = null;
+                _dbContextTransaction.Dispose();
             }            
         }
     }

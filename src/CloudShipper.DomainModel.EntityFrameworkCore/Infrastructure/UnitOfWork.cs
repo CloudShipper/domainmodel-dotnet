@@ -6,17 +6,15 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure;
 
-public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable, ITransactionHandler
+public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable
     where TContext : DbContext
 {
     private readonly TContext _context;
     private readonly IDomainEventDispatcher _domainEventDispatcher;
-    private IDbContextTransaction? _transaction;
 
     public UnitOfWork(TContext context, IDomainEventDispatcher domainEventDispatcher)
     {
         _context = context;
-        _transaction = null;
         _domainEventDispatcher = domainEventDispatcher;
     }
 
@@ -24,13 +22,31 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable, ITr
 
     public async Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
-        if (null == _transaction)
-        {
-            _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
-            return new Transaction(_transaction, this);
-        }
+        var tx = await _context.Database.BeginTransactionAsync(cancellationToken);
+        return new Transaction(tx);
+    }
 
-        return new Transaction(null, this);
+    public IResilientTransaction NewResilientTransaction()
+    {
+        return new ResilientTransaction(this, _context);
+    }
+
+    public bool HasActiveTransaction()
+    {
+        return null != _context.Database.CurrentTransaction;
+    }
+
+    public async Task SaveChangesAsync(ITransaction transaction, CancellationToken cancellationToken = default)
+    {
+        if (null == transaction)
+            throw new ArgumentNullException(nameof(transaction));
+
+        var tx = transaction as Transaction;
+        if (null == tx)
+            throw new InvalidOperationException();
+
+        _context.Database.UseTransaction(tx.DbContextTransaction.GetDbTransaction());
+        await SaveChangesAsync(cancellationToken);
     }
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -55,61 +71,5 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable, ITr
 
         // save changes
         await Context.SaveChangesAsync(cancellationToken);
-    }
-
-    async Task ITransactionHandler.CommitTransactionAsync(Transaction transaction, CancellationToken cancellation)
-    {
-        if (null == transaction)
-            throw new ArgumentNullException(nameof(transaction));
-
-        // is it the first transaction?
-        if (null == transaction.DbContextTransaction)
-            return;
-
-        // right context?
-        if (transaction.DbContextTransaction != _transaction)
-            throw new InvalidOperationException($"Transaction is not the current");
-
-        try
-        {
-            await Context.SaveChangesAsync();
-            await transaction.DbContextTransaction.CommitAsync(cancellation);
-        }
-        catch
-        {
-            ((ITransactionHandler)this).RollbackTransaction(transaction);
-            throw;
-        }
-        finally 
-        {
-            _transaction?.Dispose();
-            _transaction = null;
-        }
-    }
-
-    void ITransactionHandler.RollbackTransaction(Transaction transaction)
-    {
-        if (null == transaction)
-            throw new ArgumentNullException();
-
-        if (null == transaction.DbContextTransaction)
-            return;
-
-        if (transaction.DbContextTransaction != _transaction)
-            throw new InvalidOperationException("Transaction is not the current");
-
-        try
-        {
-            transaction.DbContextTransaction.Rollback();
-        }
-        catch
-        {
-            throw;
-        }
-        finally
-        {
-            _transaction?.Dispose();
-            _transaction = null;
-        }
     }
 }

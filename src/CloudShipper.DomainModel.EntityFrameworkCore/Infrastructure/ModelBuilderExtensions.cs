@@ -61,7 +61,7 @@ public static class ModelBuilderExtensions
             .HasColumnName("deletedBy");
 
         entity
-            .Property(x => x.DeletedBy)
+            .Property(x => x.DeletedAt)
             .HasColumnName("deletedAt");
 
         return entity;

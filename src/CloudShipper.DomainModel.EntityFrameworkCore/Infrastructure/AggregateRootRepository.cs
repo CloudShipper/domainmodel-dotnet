@@ -36,7 +36,7 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure
         public async Task<TAggregate> DeleteAsync(TAggregateId aggregateId)
         {
             TAggregate? aggregate = await _aggregateSet
-                .SingleOrDefaultAsync(a => EqualityComparer<TAggregateId>.Default.Equals(a.Id, aggregateId));
+                .SingleOrDefaultAsync(a => a.Id.Equals(aggregateId));
 
             if (null == aggregate)
                 throw new KeyNotFoundException();
@@ -68,7 +68,7 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure
         public async Task<TAggregate> GetAsync(TAggregateId aggregateId)
         {
             TAggregate? aggregate = await _aggregateSet
-                .SingleOrDefaultAsync(a => EqualityComparer<TAggregateId>.Default.Equals(a.Id, aggregateId));
+                .SingleOrDefaultAsync(a => a.Id.Equals(aggregateId));
 
             if (null == aggregate)
                 throw new KeyNotFoundException();
