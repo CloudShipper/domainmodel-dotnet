@@ -5,10 +5,10 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure;
 
 internal class ResilientTransaction : IResilientTransaction
 {
-    private readonly ITransactionable _context;
+    private readonly ITransactionProvider _context;
     private readonly DbContext _dbContext;
 
-    public ResilientTransaction(ITransactionable context, DbContext dbContext)
+    public ResilientTransaction(ITransactionProvider context, DbContext dbContext)
     {
         _context = context;
         _dbContext = dbContext;
@@ -43,6 +43,34 @@ internal class ResilientTransaction : IResilientTransaction
 
             await action(tx);
             await tx.CommitAsync();            
+        });
+    }
+
+    public async Task ExecuteAsync(Func<Task> action, CancellationToken cancellationToken = default, params ITransactionProvider?[] transactionProvider)
+    {
+        var strategy = _dbContext.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var tx = await _context.BeginTransactionAsync(cancellationToken);
+
+            foreach (var transactionProvider in transactionProvider)
+            {
+                transactionProvider?.UseTransaction(tx);
+            }
+
+            try
+            {
+                await action();
+                await tx.CommitAsync(cancellationToken);
+            }
+            finally
+            {
+                foreach (var transactionProvider in transactionProvider)
+                {
+                    transactionProvider?.UseTransaction(null);
+                }
+            }
         });
     }
 }

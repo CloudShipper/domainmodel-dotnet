@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CloudShipper.DomainModel.EntityFrameworkCore.Infrastructure;
 
-public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable
+public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionProvider
     where TContext : DbContext
 {
     private readonly TContext _context;
@@ -36,17 +36,19 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionable
         return null != _context.Database.CurrentTransaction;
     }
 
-    public async Task SaveChangesAsync(ITransaction transaction, CancellationToken cancellationToken = default)
+    public void UseTransaction(ITransaction? transaction)
     {
         if (null == transaction)
-            throw new ArgumentNullException(nameof(transaction));
+        {
+            _context.Database.UseTransaction(null);
+            return;
+        }
 
         var tx = transaction as Transaction;
         if (null == tx)
             throw new InvalidOperationException();
 
-        _context.Database.UseTransaction(tx.DbContextTransaction.GetDbTransaction());
-        await SaveChangesAsync(cancellationToken);
+        _context.Database.UseTransaction(tx.DbContextTransaction.GetDbTransaction(), tx.TransactionId);
     }
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)

@@ -1,9 +1,9 @@
 ﻿namespace CloudShipper.DomainModel.Infrastructure;
 
-public interface ITransactionable
+public interface ITransactionProvider
 {
     Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
     bool HasActiveTransaction();
     IResilientTransaction NewResilientTransaction();
-    Task SaveChangesAsync(ITransaction transaction, CancellationToken cancellationToken = default);
+    void UseTransaction(ITransaction? transaction);
 }

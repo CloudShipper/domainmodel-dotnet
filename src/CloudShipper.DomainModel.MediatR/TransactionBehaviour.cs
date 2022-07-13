@@ -16,7 +16,7 @@ public class TransactionBehaviour<TContext, TRequest, TResponse> : IPipelineBeha
 
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
     {
-        if (_unitOfWork is not ITransactionable context)
+        if (_unitOfWork is not ITransactionProvider context)
         {
             return await next();
         }

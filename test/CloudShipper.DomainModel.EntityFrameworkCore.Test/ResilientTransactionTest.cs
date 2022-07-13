@@ -26,7 +26,7 @@ public class ResilientTransactionTest : IClassFixture<ServiceConfigurationTestFi
         var factory = _fixture.ServiceProvider.GetRequiredService<IAggregateRootFactory<DomainObjectA, Guid>>();
         var repository = _fixture.ServiceProvider.GetRequiredService<IAggregateRootRepository<DomainObjectA, Guid>>();
         var unitOfWork = _fixture.ServiceProvider.GetRequiredService<IUnitOfWork<TestDbContext>>();
-        var transactionProvider = (ITransactionable)unitOfWork;
+        var transactionProvider = (ITransactionProvider)unitOfWork;
 
         var resilientTransaction = transactionProvider.NewResilientTransaction();
         Assert.NotNull(resilientTransaction);

@@ -132,7 +132,7 @@ public class RepositoryTests : IClassFixture<ServiceConfigurationTestFixture>
     public void Test_006_Aggregate_Transaction()
     {
         var unitOfWork = _fixture.ServiceProvider.GetRequiredService<IUnitOfWork<TestDbContext>>();
-        var transactionProvider = (ITransactionable)unitOfWork;
+        var transactionProvider = (ITransactionProvider)unitOfWork;
         Assert.NotNull(transactionProvider);
 
         var id = Guid.NewGuid();

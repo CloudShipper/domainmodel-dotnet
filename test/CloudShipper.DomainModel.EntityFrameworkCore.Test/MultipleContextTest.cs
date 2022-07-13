@@ -64,13 +64,61 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Test
             var repoOne = _fixture.ServiceProvider.GetRequiredService<IAggregateRootRepository<DomainObjectA, Guid>>();
             var repoTwo = _fixture.ServiceProvider.GetRequiredService<IAggregateRootRepository<DomainObjectB, Guid>>();
 
-            var transactionProvider = (ITransactionable)unitOfWorkOne;
+            var transactionProvider = (ITransactionProvider)unitOfWorkOne;
             var tx = transactionProvider.NewResilientTransaction();
-            tx.ExecuteAsync(t => 
+
+            tx.ExecuteAsync(t =>
             {
-                ((ITransactionable)unitOfWorkTwo).SaveChangesAsync(t).Wait();
+                ((ITransactionProvider)unitOfWorkTwo).UseTransaction(t);
+
+                repoOne.AddAsync(factroyOne.Create(idOne)).Wait();
+                repoTwo.AddAsync(factoryTwo.Create(idTwo)).Wait();
+
                 return Task.CompletedTask;
             }).Wait();
+            
+            
+
+            ((ITransactionProvider)unitOfWorkTwo).UseTransaction(null);
+
+            var resultOne = repoOne.GetAsync(idOne).Result;
+            var resultTwo = repoTwo.GetAsync(idTwo).Result;
+
+            Assert.NotNull(resultOne);
+            Assert.NotNull(resultTwo);
+        }
+
+        [Fact]
+        public void Test_003_CrossContextTransaction()
+        {
+            var idOne = Guid.NewGuid();
+            var idTwo = Guid.NewGuid();
+
+            var unitOfWorkOne = _fixture.ServiceProvider.GetRequiredService<IUnitOfWork<AnotherTestDbContext>>();
+            var unitOfWorkTwo = _fixture.ServiceProvider.GetRequiredService<IUnitOfWork<YetAnotherTestDbContext>>();
+
+            var factroyOne = _fixture.ServiceProvider.GetRequiredService<IAggregateRootFactory<DomainObjectA, Guid>>();
+            var factoryTwo = _fixture.ServiceProvider.GetRequiredService<IAggregateRootFactory<DomainObjectB, Guid>>();
+
+            var repoOne = _fixture.ServiceProvider.GetRequiredService<IAggregateRootRepository<DomainObjectA, Guid>>();
+            var repoTwo = _fixture.ServiceProvider.GetRequiredService<IAggregateRootRepository<DomainObjectB, Guid>>();
+
+            var transactionProvider = (ITransactionProvider)unitOfWorkOne;
+            var tx = transactionProvider.NewResilientTransaction();
+
+            tx.ExecuteAsync(() =>
+            {
+                repoOne.AddAsync(factroyOne.Create(idOne)).Wait();
+                repoTwo.AddAsync(factoryTwo.Create(idTwo)).Wait();
+
+                return Task.CompletedTask;
+            }, default, unitOfWorkTwo as ITransactionProvider).Wait();
+
+            var resultOne = repoOne.GetAsync(idOne).Result;
+            var resultTwo = repoTwo.GetAsync(idTwo).Result;
+
+            Assert.NotNull(resultOne);
+            Assert.NotNull(resultTwo);
         }
     }
 }
