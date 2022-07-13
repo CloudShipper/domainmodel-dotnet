@@ -57,7 +57,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>, ITransactionProvider
         var aggregates = _context.ChangeTracker
             .Entries<IAggregate>()
             .Select(e => e.Entity)
-            .Where(e => e.DomainEvents != null && e.DomainEvents.Any())
+            .Where(e => e.DomainEvents.Count > 0)
             .ToList();
 
         var events = aggregates

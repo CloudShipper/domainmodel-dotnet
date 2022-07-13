@@ -112,7 +112,7 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Test
                 repoTwo.AddAsync(factoryTwo.Create(idTwo)).Wait();
 
                 return Task.CompletedTask;
-            }, default, unitOfWorkTwo as ITransactionProvider).Wait();
+            }, default, unitOfWorkTwo as ITransactionProvider, null).Wait();
 
             var resultOne = repoOne.GetAsync(idOne).Result;
             var resultTwo = repoTwo.GetAsync(idTwo).Result;
