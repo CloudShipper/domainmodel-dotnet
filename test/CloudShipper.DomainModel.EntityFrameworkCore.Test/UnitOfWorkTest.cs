@@ -5,6 +5,7 @@ using CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain.Events.DomainObje
 using CloudShipper.DomainModel.EntityFrameworkCore.Test.Extensions;
 using CloudShipper.DomainModel.EntityFrameworkCore.Test.Infrastructure;
 using CloudShipper.DomainModel.Events;
+using CloudShipper.DomainModel.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -138,5 +139,16 @@ public class UnitOfWorkTest
 
         tx.Verify(x => x.Rollback(), Times.Once);
         context.Verify(x => x.SaveChangesAsync(default), Times.Never);
+    }
+
+    [Fact]
+    public void Test_004_UseWrongITransactionTypeImpl()
+    {
+        var context = new Mock<TestDbContext>();
+        var dispatcher = new Mock<IDomainEventDispatcher>();
+        var tx = new Mock<ITransaction>();
+        var unitOfWork = new UnitOfWork<TestDbContext>(context.Object, dispatcher.Object);
+
+        Assert.Throws<InvalidOperationException>(() => unitOfWork.UseTransaction(tx.Object));
     }
 }
