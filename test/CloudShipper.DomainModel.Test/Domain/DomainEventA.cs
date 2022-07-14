@@ -3,15 +3,9 @@
 namespace CloudShipper.DomainModel.Test.Domain
 {
     [DomainEvent(Constants.DomainEventA)]
-    internal class DomainEventA : DomainEvent<Guid>
+    internal class DomainEventA : DomainEvent<Domain.DomainObjectA,Guid>
     {
-        public DomainEventA(Guid aggregateId, Type aggregateType) : base(aggregateId, aggregateType)
-        {
-        }
-
-        public DomainEventA(Guid aggregateId,
-                            string aggregateType,
-                            string aggregateTypeId) : base(aggregateId, aggregateType, aggregateTypeId)
+        public DomainEventA(Guid aggregateId) : base(aggregateId)
         {
         }
     }

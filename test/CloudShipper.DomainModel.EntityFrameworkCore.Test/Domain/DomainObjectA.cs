@@ -8,7 +8,7 @@ internal class DomainObjectA : AggregateRoot<Guid>
 {
     public DomainObjectA(Guid id) : base(id)
     {
-        AddEvent(new CreatedEvent(Id, GetType()));
+        AddEvent(new CreatedEvent(Id));
     }
 
     public int Value1 { get; internal set; } = 1;
@@ -16,6 +16,6 @@ internal class DomainObjectA : AggregateRoot<Guid>
     public void SetValue1(int value)
     {
         Value1 = value;
-        AddEvent(new Value1ChangedEvent(Id, GetType()) { Value1 = value });
+        AddEvent(new Value1ChangedEvent(Id) { Value1 = value });
     }
 }

@@ -2,11 +2,9 @@
 
 namespace CloudShipper.DomainModel.Test.Domain
 {
-    internal class NoDomainEventAttribute : DomainEvent<Guid>
+    internal class NoDomainEventAttribute : DomainEvent<Domain.DomainObjectA,Guid>
     {
-        public NoDomainEventAttribute(Guid aggregateId,
-                                      string aggregateType,
-                                      string aggregateTypeId) : base(aggregateId, aggregateType, aggregateTypeId)
+        public NoDomainEventAttribute(Guid aggregateId) : base(aggregateId)
         {
         }
     }

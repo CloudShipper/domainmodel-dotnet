@@ -8,7 +8,7 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain
     {
         public DomainObjectB(Guid id) : base(id)
         {
-            AddEvent(new CreatedEvent(Id, GetType()));
+            AddEvent(new CreatedEvent(Id));
         }
 
         public int Value1 { get; internal set; } = 1;
@@ -16,7 +16,7 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain
         public void SetValue1(int value)
         {
             Value1 = value;
-            AddEvent(new Value1ChangedEvent(Id, GetType()) { Value1 = value });
+            AddEvent(new Value1ChangedEvent(Id) { Value1 = value });
         }
     }
 }

@@ -1,22 +1,16 @@
 ﻿using CloudShipper.DomainModel.Aggregate;
+using CloudShipper.DomainModel.Entity;
 
 namespace CloudShipper.DomainModel.Events;
 
-public abstract class DomainEvent<TAggregateId> : IDomainEvent<TAggregateId>
+public abstract class DomainEvent<TAggregate,TAggregateId> : IDomainEvent<TAggregateId>
+    where TAggregate : IEntity<TAggregateId>
 {
-    protected DomainEvent(TAggregateId aggregateId, string aggregateType, string aggregateTypeId)
+    protected DomainEvent(TAggregateId aggregateId)
     {
         AggregateId = aggregateId;
-        AggregateType = aggregateType;
-        AggregateTypeId = aggregateTypeId;
-        EventTypeId = DomainEventTypeIdProvider.Get(this);
-    }
-
-    protected DomainEvent(TAggregateId aggregateId, Type aggregateType)
-    {
-        AggregateId = aggregateId;
-        AggregateType = aggregateType.Name;
-        AggregateTypeId = AggregateTypeIdProvider.Get(aggregateType);
+        AggregateType = typeof(TAggregate).Name;
+        AggregateTypeId = AggregateTypeIdProvider.Get(typeof(TAggregate));
         EventTypeId = DomainEventTypeIdProvider.Get(this);
     }
     public TAggregateId AggregateId { get; private set; }

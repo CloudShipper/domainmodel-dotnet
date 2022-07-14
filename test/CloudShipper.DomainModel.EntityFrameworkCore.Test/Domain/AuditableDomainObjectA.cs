@@ -15,7 +15,7 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain
 
         public AuditableDomainObjectA(Guid id, Guid principalId) : base(id, principalId)
         {
-            AddEvent(new CreatedEvent(id, GetType(), principalId));
+            AddEvent(new CreatedEvent(id, principalId));
         }
 
         public int Value1 { get; private set; }
@@ -23,7 +23,7 @@ namespace CloudShipper.DomainModel.EntityFrameworkCore.Test.Domain
         public void SetValue1(int value, Guid principalId)
         {
             Value1 = value;
-            var evt = new Value1ChangedEvent(Id, GetType(), principalId) { Value1 = value };
+            var evt = new Value1ChangedEvent(Id, principalId) { Value1 = value };
             ModifiedBy = principalId;
             ModifiedAt = evt.Timestamp;
             AddEvent(evt);

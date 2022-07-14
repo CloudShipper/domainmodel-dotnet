@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.1.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\CloudShipper.DomainModel.EntityFrameworkCore\CloudShipper.DomainModel.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\..\src\CloudShipper.DomainModel.MediatR\CloudShipper.DomainModel.MediatR.csproj" />
+    <ProjectReference Include="..\..\..\src\CloudShipper.DomainModel\CloudShipper.DomainModel.csproj" />
+    <ProjectReference Include="..\EFCore.Contacts.Application\EFCore.Contacts.Application.csproj" />
+    <ProjectReference Include="..\EFCore.Contacts.Domain\EFCore.Contacts.Domain.csproj" />
+    <ProjectReference Include="..\EFCore.Contacts.Infrastructure\EFCore.Contacts.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,17 +1,14 @@
-﻿namespace CloudShipper.DomainModel.Events
-{
-    public abstract class AuditableDomainEvent<TAggregateId, TPrincipalId> : 
-        DomainEvent<TAggregateId>, IAuditableDomainEvent<TAggregateId, TPrincipalId>
-    {
-        protected AuditableDomainEvent(TAggregateId aggregateId, string aggregateType, string aggregateTypeId, TPrincipalId principalid) 
-            : base(aggregateId, aggregateType, aggregateTypeId)
-        {
-            RaisedBy = principalid;
-            Timestamp = DateTimeOffset.UtcNow;
-        }
+﻿using CloudShipper.DomainModel.Aggregate;
 
-        protected AuditableDomainEvent(TAggregateId aggregateId, Type aggregateType, TPrincipalId principalid)
-            : base(aggregateId, aggregateType)
+namespace CloudShipper.DomainModel.Events
+{
+    public abstract class AuditableDomainEvent<TAggregate, TAggregateId, TPrincipalId> : 
+        DomainEvent<TAggregate, TAggregateId>, IAuditableDomainEvent<TAggregateId, TPrincipalId>
+        where TAggregate : IAuditableAggregateRoot<TAggregateId, TPrincipalId>
+    {
+
+        protected AuditableDomainEvent(TAggregateId aggregateId, TPrincipalId principalid)
+            : base(aggregateId)
         {
             RaisedBy = principalid;
             Timestamp = DateTimeOffset.UtcNow;
