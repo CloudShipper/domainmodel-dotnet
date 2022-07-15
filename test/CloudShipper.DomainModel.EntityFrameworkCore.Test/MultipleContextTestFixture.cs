@@ -35,7 +35,7 @@ public class MultipleContextTestFixture : IDisposable
                 .Bind<DomainObjectA, Guid>())
             .AddRepositories<YetAnotherTestDbContext>(binder => binder
                 .Bind<DomainObjectB, Guid>())
-            .AddEfCoreInfrastructure(new[] { typeof(DomainObjectA) });
+            .AddEFCoreDefaultRepositories(new[] { typeof(DomainObjectA) });
 
         ServiceProvider = services.BuildServiceProvider();
 

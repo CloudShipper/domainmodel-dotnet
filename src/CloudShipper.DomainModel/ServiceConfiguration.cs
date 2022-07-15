@@ -5,7 +5,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceConfiguration
 {
-    public static IServiceCollection AddDomain(this IServiceCollection services, IEnumerable<Type> domainTypes)
+    public static IServiceCollection AddDomain(this IServiceCollection services, params Type[] domainTypes)
     {
         // 1. initalize AggregateTypeIdProvider
         AggregateTypeIdProvider.ReadAllTypes(domainTypes);

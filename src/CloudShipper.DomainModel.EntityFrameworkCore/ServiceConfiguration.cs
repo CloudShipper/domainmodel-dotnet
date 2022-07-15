@@ -37,7 +37,7 @@ public static class ServiceConfiguration
         return services;
     }
 
-    public static IServiceCollection AddEfCoreInfrastructure(this IServiceCollection services, IEnumerable<Type> assemblyTypes)
+    public static IServiceCollection AddEFCoreDefaultRepositories(this IServiceCollection services, params Type[] assemblyTypes)
     {
         return services.Scan(scan => scan
             .FromAssembliesOf(assemblyTypes)

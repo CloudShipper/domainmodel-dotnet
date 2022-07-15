@@ -1,6 +1,8 @@
+using EFCore.Contacts.Api;
 using EFCore.Contacts.Application.Behaviors;
 using EFCore.Contacts.Application.Commands.Contact;
 using EFCore.Contacts.Application.Queries;
+using EFCore.Contacts.Application.Queries.Models;
 using EFCore.Contacts.Domain;
 using EFCore.Contacts.Infrastructure.Context;
 using FluentValidation;
@@ -14,7 +16,7 @@ sqLiteConnection.Open();
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Filters.Add<ExceptionFilter>());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -22,16 +24,17 @@ builder.Services.AddSwaggerGen();
 builder.Services
     .AddDbContext<ContactContext>(options => options.UseSqlite(sqLiteConnection))
     .AddMediatRDispatcher()
-    .AddDomain(new[] { typeof(Contact) })
+    .AddDomain(typeof(Contact))
     .AddRepositories<ContactContext>(binder =>
         binder.Bind<Contact, Guid, Guid>())
-    .AddEfCoreInfrastructure(new[] { typeof(Contact) })
+    .AddEFCoreDefaultRepositories(typeof(Contact))
     .AddValidatorsFromAssembly(typeof(CreateContactCommand).Assembly)
     .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>))
     .AddTransient(typeof(IPipelineBehavior<,>), typeof(ContactContextBehavior<,>))
-    .AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>))    
+    .AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>))
     .AddMediatR(typeof(CreateContactCommand))
-    .AddScoped<IContactQueryService, ContactQueryService>();
+    .AddScoped<IContactQueryService, ContactQueryService>()
+    .AddAutoMapper(typeof(ContactDto));
 
 
 var app = builder.Build();

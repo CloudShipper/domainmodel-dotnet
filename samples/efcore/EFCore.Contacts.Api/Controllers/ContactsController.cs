@@ -1,7 +1,7 @@
 ﻿using EFCore.Contacts.Application.Commands.Contact;
 using EFCore.Contacts.Application.Commands.Contact.Responses;
 using EFCore.Contacts.Application.Queries;
-using EFCore.Contacts.Domain;
+using EFCore.Contacts.Application.Queries.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,17 +24,9 @@ public class ContactsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateContactCommandResponse))]
     public async Task<IActionResult> CreateContac([FromBody]CreateContactCommand command)
-    {
-        try
-        {
-            var response = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
-        }
-        catch (Exception)
-        {
-            // Todo, error handling
-            return BadRequest();
-        }       
+    {        
+        var response = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);            
     }
 
     [HttpPut("personalinformation")]
@@ -42,48 +34,24 @@ public class ContactsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdatePersonalInformations([FromBody]UpdateContactPersonalInformationCommand command)
     {
-        try
-        {
-            var result = await _mediator.Send(command);
-            return Ok(result);
-        }
-        catch (Exception)
-        {
-            // Todo, error handling
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
+        var result = await _mediator.Send(command);
+        return Ok(result);        
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contact))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContactDto))]
     public async Task<IActionResult> GetById(Guid id)
     {
-        try
-        {
-            var contact = await _contactQueryService.GetByIdAsync(id);
-            return Ok(contact);
-        }        
-        catch (Exception)
-        {
-            // Todo, error handling
-            return NotFound();
-        }
+        var contact = await _contactQueryService.GetByIdAsync(id);
+        return Ok(contact);        
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Contact>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContactDto>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAll()
     {
-        try
-        {
-            return Ok(await _contactQueryService.GetAllasync());
-        }
-        catch (Exception)
-        {
-            // Todo, error handling
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
+        return Ok(await _contactQueryService.GetAllasync());        
     }
 }

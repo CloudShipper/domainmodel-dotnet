@@ -1,9 +1,9 @@
-﻿using EFCore.Contacts.Domain;
+﻿using EFCore.Contacts.Application.Queries.Models;
 
 namespace EFCore.Contacts.Application.Queries;
 
 public interface IContactQueryService
 {
-    Task<Contact> GetByIdAsync(Guid id);
-    Task<IEnumerable<Contact>> GetAllasync();
+    Task<ContactDto> GetByIdAsync(Guid id);
+    Task<IEnumerable<ContactDto>> GetAllasync();
 }

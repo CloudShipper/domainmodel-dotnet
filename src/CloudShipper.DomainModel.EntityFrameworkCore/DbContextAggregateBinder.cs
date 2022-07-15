@@ -1,5 +1,4 @@
 ﻿using CloudShipper.DomainModel.Aggregate;
-using CloudShipper.DomainModel.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace CloudShipper.DomainModel.EntityFrameworkCore;

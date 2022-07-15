@@ -21,3 +21,4 @@ public class ContactContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 }
+ 

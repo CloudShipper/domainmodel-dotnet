@@ -28,7 +28,7 @@ public class ServiceConfigurationTestFixture : IDisposable
                 .Bind<DomainObjectA, Guid>()
                 .Bind<DomainObjectB, Guid>()
                 .Bind<AuditableDomainObjectA, Guid, Guid>())
-            .AddEfCoreInfrastructure(new[] { typeof(DomainObjectA)});
+            .AddEFCoreDefaultRepositories(new[] { typeof(DomainObjectA)});
 
         ServiceProvider = services.BuildServiceProvider();
         _context = ServiceProvider.GetRequiredService<TestDbContext>();

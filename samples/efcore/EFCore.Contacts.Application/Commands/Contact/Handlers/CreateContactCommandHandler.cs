@@ -1,5 +1,4 @@
 ﻿using CloudShipper.DomainModel.Repository;
-using EFCore.Contacts.Application.Commands.Contact;
 using EFCore.Contacts.Application.Commands.Contact.Responses;
 using EFCore.Contacts.Domain;
 using MediatR;
